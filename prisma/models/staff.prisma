@@ -1,0 +1,44 @@
+model Staff {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String?   // null if this staff member only logs in via OAuth (Open Authorization)
+  role         StaffRole
+  accounts     StaffAccount[]
+  sessions     StaffSession[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  createdById  String?   // which admin created this staff account; null for the first seeded admin
+}
+
+model StaffAccount {
+  id                String  @id @default(cuid())
+  staffId           String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  staff             Staff   @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model StaffSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  staffId      String
+  expires      DateTime
+  staff        Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+}
+
+model StaffVerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
