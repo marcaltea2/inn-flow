@@ -1,0 +1,41 @@
+model Reservation {
+  id               String   @id @default(cuid())
+  guestId          String
+  roomId           String
+  checkInDate      DateTime // planned — date-only semantics, UTC midnight — see §6.3
+  checkOutDate     DateTime // planned
+  actualCheckInAt  DateTime? // real timestamp when check-in was processed
+  actualCheckOutAt DateTime? // real timestamp when check-out was processed
+  checkedInById    String?   // staff who processed check-in
+  checkedOutById   String?   // staff who processed check-out
+  status           ReservationStatus @default(PENDING)
+  adults           Int
+  children         Int      @default(0)
+  rateAtBooking    Decimal  @db.Money  // snapshot rate — never recompute from RoomType retroactively
+  createdById      String?  // staff who created it — nullable for online bookings (guestId is the actor then)
+  updatedById      String?
+  bookingSource    BookingSource @default(FRONT_DESK)
+  paymentStatus    PaymentStatus @default(UNPAID)
+  holdExpiresAt    DateTime?     // set only for ONLINE + PENDING; cron sweep releases the room if passed
+  guest            Guest    @relation(fields: [guestId], references: [id])
+  room             Room     @relation(fields: [roomId], references: [id])
+  payments         Payment[]  // prepayments made before check-in / before a Folio exists
+  folio            Folio?
+  statusHistory    StatusHistory[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  @@index([roomId, checkInDate, checkOutDate])
+  @@index([status, holdExpiresAt]) // for the abandoned-hold sweep query
+  @@index([guestId, actualCheckOutAt]) // for guest stay-history lookups
+}
+
+model StatusHistory {
+  id            String             @id @default(cuid())
+  reservationId String
+  fromStatus    ReservationStatus?
+  toStatus      ReservationStatus
+  changedAt     DateTime           @default(now())
+  changedById   String?            // staff who made the change; null if system/cron-triggered
+  reason        String?
+  reservation   Reservation        @relation(fields: [reservationId], references: [id])
+}

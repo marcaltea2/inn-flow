@@ -1,0 +1,33 @@
+model Folio {
+  id            String   @id @default(cuid())
+  reservationId String   @unique
+  openedAt      DateTime @default(now())
+  closedAt      DateTime?
+  status        FolioStatus @default(OPEN)
+  charges       Charge[]
+  payments      Payment[]
+}
+
+model Charge {
+  id         String     @id @default(cuid())
+  folioId    String
+  type       ChargeType
+  amount     Decimal    @db.Money // PREPAYMENT_CREDIT is posted as a negative amount at check-in
+  postedAt   DateTime   @default(now())
+  postedById String?
+  folio      Folio      @relation(fields: [folioId], references: [id])
+}
+
+model Payment {
+  id                    String   @id @default(cuid())
+  folioId               String?
+  reservationId         String?
+  amount                Decimal  @db.Money
+  method                PaymentMethod
+  type                  PaymentTransactionType @default(PAYMENT)
+  stripePaymentIntentId String?  @unique // set for PAYMENT rows; also doubles as webhook idempotency key
+  stripeRefundId        String?  @unique // set for REFUND rows
+  paidAt                DateTime @default(now())
+  folio                 Folio?       @relation(fields: [folioId], references: [id])
+  reservation           Reservation? @relation(fields: [reservationId], references: [id])
+}
