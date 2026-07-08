@@ -52,9 +52,6 @@
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.27.0"
   },
-  "prisma": {
-    "schema": "prisma/schema"
-  },
   "ct3aMetadata": {
     "initVersion": "7.40.0"
   },
