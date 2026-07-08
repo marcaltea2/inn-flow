@@ -3,6 +3,7 @@ model Folio {
   reservationId String   @unique
   openedAt      DateTime @default(now())
   closedAt      DateTime?
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
   status        FolioStatus @default(OPEN)
   charges       Charge[]
   payments      Payment[]

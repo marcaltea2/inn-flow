@@ -6,6 +6,7 @@ model Staff {
   role         StaffRole
   accounts     StaffAccount[]
   sessions     StaffSession[]
+  assignedTasks HousekeepingTask[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   createdById  String?   // which admin created this staff account; null for the first seeded admin
