@@ -1,9 +1,0 @@
-model Setting {
-  id                             String   @id @default(cuid())
-  cancellationCutoffHours        Int      @default(48)  // free-cancellation window before check-in
-  cancellationRefundPercent      Int      @default(100) // % refunded if cancelled before the cutoff
-  lateCancellationRefundPercent  Int      @default(0)    // % refunded if cancelled after the cutoff
-  noShowRefundPercent            Int      @default(0)    // % refunded on a no-show
-  updatedAt                      DateTime @updatedAt
-  updatedById                    String?
-}
