@@ -52,11 +52,12 @@ enum PaymentTransactionType {
   REFUND
 }
 
-enum StaffRole {
+enum Role {
   ADMIN
   MANAGER
   FRONT_DESK
   HOUSEKEEPING
+  GUEST
 }
 
 enum HousekeepingTaskType {

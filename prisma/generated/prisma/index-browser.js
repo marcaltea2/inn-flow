@@ -121,6 +121,45 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  image: 'image',
+  passwordHash: 'passwordHash',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  provider: 'provider',
+  providerAccountId: 'providerAccountId',
+  refresh_token: 'refresh_token',
+  access_token: 'access_token',
+  expires_at: 'expires_at',
+  token_type: 'token_type',
+  scope: 'scope',
+  id_token: 'id_token',
+  session_state: 'session_state'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  sessionToken: 'sessionToken',
+  userId: 'userId',
+  expires: 'expires'
+};
+
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires'
+};
+
 exports.Prisma.FolioScalarFieldEnum = {
   id: 'id',
   reservationId: 'reservationId',
@@ -152,6 +191,7 @@ exports.Prisma.PaymentScalarFieldEnum = {
 
 exports.Prisma.GuestScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   name: 'name',
   email: 'email',
   phone: 'phone',
@@ -159,41 +199,10 @@ exports.Prisma.GuestScalarFieldEnum = {
   idNumber: 'idNumber',
   idDocumentUrl: 'idDocumentUrl',
   notes: 'notes',
-  passwordHash: 'passwordHash',
-  emailVerified: 'emailVerified',
-  image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById',
   updatedById: 'updatedById'
-};
-
-exports.Prisma.GuestAccountScalarFieldEnum = {
-  id: 'id',
-  guestId: 'guestId',
-  type: 'type',
-  provider: 'provider',
-  providerAccountId: 'providerAccountId',
-  refresh_token: 'refresh_token',
-  access_token: 'access_token',
-  expires_at: 'expires_at',
-  token_type: 'token_type',
-  scope: 'scope',
-  id_token: 'id_token',
-  session_state: 'session_state'
-};
-
-exports.Prisma.GuestSessionScalarFieldEnum = {
-  id: 'id',
-  sessionToken: 'sessionToken',
-  guestId: 'guestId',
-  expires: 'expires'
-};
-
-exports.Prisma.GuestVerificationTokenScalarFieldEnum = {
-  identifier: 'identifier',
-  token: 'token',
-  expires: 'expires'
 };
 
 exports.Prisma.HousekeepingTaskScalarFieldEnum = {
@@ -285,41 +294,11 @@ exports.Prisma.SettingScalarFieldEnum = {
 
 exports.Prisma.StaffScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   name: 'name',
-  email: 'email',
-  passwordHash: 'passwordHash',
-  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById'
-};
-
-exports.Prisma.StaffAccountScalarFieldEnum = {
-  id: 'id',
-  staffId: 'staffId',
-  type: 'type',
-  provider: 'provider',
-  providerAccountId: 'providerAccountId',
-  refresh_token: 'refresh_token',
-  access_token: 'access_token',
-  expires_at: 'expires_at',
-  token_type: 'token_type',
-  scope: 'scope',
-  id_token: 'id_token',
-  session_state: 'session_state'
-};
-
-exports.Prisma.StaffSessionScalarFieldEnum = {
-  id: 'id',
-  sessionToken: 'sessionToken',
-  staffId: 'staffId',
-  expires: 'expires'
-};
-
-exports.Prisma.StaffVerificationTokenScalarFieldEnum = {
-  identifier: 'identifier',
-  token: 'token',
-  expires: 'expires'
 };
 
 exports.Prisma.SortOrder = {
@@ -336,6 +315,14 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.Role = exports.$Enums.Role = {
+  ADMIN: 'ADMIN',
+  MANAGER: 'MANAGER',
+  FRONT_DESK: 'FRONT_DESK',
+  HOUSEKEEPING: 'HOUSEKEEPING',
+  GUEST: 'GUEST'
+};
+
 exports.FolioStatus = exports.$Enums.FolioStatus = {
   OPEN: 'OPEN',
   CLOSED: 'CLOSED'
@@ -402,21 +389,15 @@ exports.RoomStatus = exports.$Enums.RoomStatus = {
   OUT_OF_ORDER: 'OUT_OF_ORDER'
 };
 
-exports.StaffRole = exports.$Enums.StaffRole = {
-  ADMIN: 'ADMIN',
-  MANAGER: 'MANAGER',
-  FRONT_DESK: 'FRONT_DESK',
-  HOUSEKEEPING: 'HOUSEKEEPING'
-};
-
 exports.Prisma.ModelName = {
+  User: 'User',
+  Account: 'Account',
+  Session: 'Session',
+  VerificationToken: 'VerificationToken',
   Folio: 'Folio',
   Charge: 'Charge',
   Payment: 'Payment',
   Guest: 'Guest',
-  GuestAccount: 'GuestAccount',
-  GuestSession: 'GuestSession',
-  GuestVerificationToken: 'GuestVerificationToken',
   HousekeepingTask: 'HousekeepingTask',
   Reservation: 'Reservation',
   StatusHistory: 'StatusHistory',
@@ -424,10 +405,7 @@ exports.Prisma.ModelName = {
   RoomType: 'RoomType',
   Amenity: 'Amenity',
   Setting: 'Setting',
-  Staff: 'Staff',
-  StaffAccount: 'StaffAccount',
-  StaffSession: 'StaffSession',
-  StaffVerificationToken: 'StaffVerificationToken'
+  Staff: 'Staff'
 };
 
 /**

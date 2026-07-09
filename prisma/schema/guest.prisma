@@ -1,5 +1,7 @@
 model Guest {
   id            String   @id @default(cuid())
+  userId        String?  @unique // null if this guest has no online account (e.g. a walk-in)
+  user          User?    @relation(fields: [userId], references: [id])
   name          String
   email         String?  @unique
   phone         String?
@@ -7,46 +9,9 @@ model Guest {
   idNumber      String?
   idDocumentUrl String?  // pointer to secure storage — see PII (Personally Identifiable Information) handling in §7
   notes         String?
-  passwordHash  String?  // null until the guest registers an account, or if they only ever use OAuth
-  emailVerified DateTime?
-  image         String?
   reservations  Reservation[]
-  accounts      GuestAccount[]  // OAuth (Open Authorization) sign-ins, e.g. "Sign in with Google"
-  sessions      GuestSession[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   createdById   String?  // staff who entered this guest (e.g. a walk-in); null if the guest self-registered
   updatedById   String?
-}
-
-model GuestAccount {
-  id                String  @id @default(cuid())
-  guestId           String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-  guest             Guest   @relation(fields: [guestId], references: [id], onDelete: Cascade)
-  @@unique([provider, providerAccountId])
-}
-
-model GuestSession {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  guestId      String
-  expires      DateTime
-  guest        Guest    @relation(fields: [guestId], references: [id], onDelete: Cascade)
-}
-
-model GuestVerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-  @@unique([identifier, token])
 }
