@@ -1,11 +1,16 @@
 model Staff {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id])
-  name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdById String?  
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  user        User      @relation(fields: [userId], references: [id])
+  firstName   String
+  lastName    String?
+  middleName  String?
+  birthDate   DateTime?
+  email       String?   @unique
+  phone       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdById String?
 
   assignedTasks HousekeepingTask[]
 }
