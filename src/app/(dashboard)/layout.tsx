@@ -17,7 +17,7 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <AppSidebar
         user={{
-          name: session.user.name ?? "",
+          name: session.user.firstName  + " " + session.user.lastName,
           email: session.user.email ?? "",
           role: session.user.role,
           image: session.user.image,
