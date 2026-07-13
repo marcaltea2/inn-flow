@@ -1,16 +1,17 @@
 model Staff {
-  id          String    @id @default(cuid())
-  userId      String    @unique
-  user        User      @relation(fields: [userId], references: [id])
-  firstName   String
-  lastName    String?
-  middleName  String?
-  birthDate   DateTime?
-  email       String?   @unique
-  phone       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  createdById String?
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id])
+  firstName       String
+  lastName        String
+  phone           String? // work contact number
+  employeeId      String?   @unique // optional external HR/payroll identifier
+  deactivatedAt   DateTime? // null = active; set when an admin deactivates this staff member (§9.5 Phase 1 Day 8)
+  deactivatedById String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  createdById     String? // which admin created this staff record; null for the first seeded admin
+  updatedById     String?
 
   assignedTasks HousekeepingTask[]
 }

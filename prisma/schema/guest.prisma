@@ -1,20 +1,21 @@
 model Guest {
-  id            String        @id @default(cuid())
-  userId        String?       @unique // null if this guest has no online account (e.g. a walk-in)
-  user          User?         @relation(fields: [userId], references: [id])
-  firstName     String
-  lastName      String?
-  middleName    String?
-  birthDate    DateTime?
-  email         String?       @unique
-  phone         String?
-  idType        String? // e.g. "Passport", "Driver's License" — make this an enum if the client has a fixed, known list
-  idNumber      String?
-  idDocumentUrl String? // pointer to secure storage — see PII (Personally Identifiable Information) handling in §7
-  notes         String?
-  reservations  Reservation[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  createdById   String? // staff who entered this guest (e.g. a walk-in); null if the guest self-registered
-  updatedById   String?
+  id             String        @id @default(cuid())
+  userId         String?       @unique // null if this guest has no online account (e.g. a walk-in)
+  user           User?         @relation(fields: [userId], references: [id])
+  firstName      String
+  lastName       String
+  email          String?       @unique
+  phone          String?
+  dateOfBirth    DateTime? // commonly required on a guest registration card; also relevant for age-restricted bookings
+  nationality    String? // many jurisdictions legally require this on file for hotel guests
+  idType         String? // e.g. "Passport", "Driver's License" — make this an enum if the client has a fixed, known list
+  idNumber       String?
+  idDocumentUrl  String? // pointer to secure storage — see PII (Personally Identifiable Information) handling in §7
+  notes          String?
+  marketingOptIn Boolean       @default(false) // explicit consent to promotional email — separate from transactional booking emails, which don't need opt-in
+  reservations   Reservation[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  createdById    String? // staff who entered this guest (e.g. a walk-in); null if the guest self-registered
+  updatedById    String?
 }
