@@ -125,7 +125,7 @@ export function AppUser({ user }: AppUserProps) {
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => signOut({ callbackUrl: "/staff/login" })}
+                onClick={() => signOut({ callbackUrl: "/login" })}
               >
                 <LogOut className="mr-2 size-4" />
                 Log out

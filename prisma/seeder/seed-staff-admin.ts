@@ -39,7 +39,7 @@ async function main() {
       passwordHash, // re-running the seeder also resets the password — see note below
       staff: {
         upsert: {
-          create: { firstName: "Marc Chino", lastName: "Altea", middleName: "Navarrete" },
+          create: { firstName: "Marc Chino", lastName: "Altea" },
           update: {}, // Staff row already exists — nothing to change here
         },
       },
@@ -50,7 +50,7 @@ async function main() {
       isActive: true,
       passwordHash,
       staff: {
-        create: { firstName: "Marc Chino", lastName: "Altea", middleName: "Navarrete" },
+        create: { firstName: "Marc Chino", lastName: "Altea" },
       },
     },
   });
