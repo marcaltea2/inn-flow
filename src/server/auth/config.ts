@@ -7,7 +7,6 @@ import type { Role } from "@prisma/client";
 import "next-auth/jwt";
 import { db } from "~/server/db";
 
-
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -18,7 +17,9 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      role: Role;
+      role: string;
+      firstName: string;
+      lastName: string;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -33,6 +34,8 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     role: Role;
+    firstName: string;
+    lastName: string;
   }
 }
 
@@ -59,11 +62,13 @@ export const authConfig = {
         const user = await db.user.findUnique({
           where: { email: credentials.email as string },
         });
+
         if (!user?.passwordHash) return null;
         const valid = await bcrypt.compare(
           credentials.password as string,
           user.passwordHash,
         );
+
         return valid ? user : null;
       },
     }),
@@ -80,19 +85,38 @@ export const authConfig = {
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
   callbacks: {
-    jwt: ({ token, user }) => {
-      if (user) token.role = (user as { role: Role }).role;
+    async jwt({ token, user }) {
+      // Runs only when signing in (or when the JWT is updated)
+      if (user) {
+        token.role = (user as { role: Role }).role;
+      }
+
       return token;
     },
 
-    session: ({ session, token }) => ({
-      ...session,
-      user: {
+    async session({ session, token }) {
+      const user = await db.user.findUnique({
+        where: { id: token.sub! },
+        include: {
+          staff: true,
+          guest: true,
+        },
+      });
+
+      if (!user) return session;
+
+      const profile = user.staff ?? user.guest;
+
+      session.user = {
         ...session.user,
-        id: token.sub!,
-        role: token.role,
-      },
-    }),
+        id: user.id,
+        role: user.role,
+        firstName: profile?.firstName ?? "",
+        lastName: profile?.lastName ?? "",
+      };
+
+      return session;
+    },
   },
   pages: { signIn: "/login" },
 } satisfies NextAuthConfig;
