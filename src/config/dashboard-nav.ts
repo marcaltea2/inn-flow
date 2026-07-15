@@ -9,7 +9,7 @@ import {
   Settings,
   type LucideIcon,
 } from "lucide-react";
-import type { Role } from "@prisma/client"; 
+import { Role } from "@prisma/client"; 
 
 export type NavItem = {
   title: string;
@@ -27,7 +27,9 @@ export const dashboardNav: NavGroup[] = [
   {
     label: "Overview",
     items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+      { title: "Dashboard", url: "/", 
+        icon: LayoutDashboard 
+      },
     ],
   },
   {
@@ -35,15 +37,15 @@ export const dashboardNav: NavGroup[] = [
     items: [
       {
         title: "Reservations",
-        url: "/dashboard/reservations",
+        url: "/reservations",
         icon: CalendarRange,
-        roles: ["ADMIN", "MANAGER", "FRONT_DESK"],
+        roles: [Role.ADMIN, Role.MANAGER, Role.FRONT_DESK],
       },
       {
         title: "Guests",
-        url: "/dashboard/guests",
+        url: "/guests",
         icon: Users,
-        roles: ["ADMIN", "MANAGER", "FRONT_DESK"],
+        roles: [Role.ADMIN, Role.MANAGER, Role.FRONT_DESK],
       },
     ],
   },
@@ -51,16 +53,16 @@ export const dashboardNav: NavGroup[] = [
     label: "Operations",
     items: [
       {
-        title: "Rooms & Room Types",
-        url: "/dashboard/rooms",
+        title: "Rooms",
+        url: "/rooms",
         icon: BedDouble,
-        roles: ["ADMIN", "MANAGER"],
+        roles: [Role.ADMIN, Role.MANAGER],
       },
       {
         title: "Housekeeping",
-        url: "/dashboard/housekeeping",
+        url: "/housekeeping",
         icon: Sparkles,
-        roles: ["ADMIN", "MANAGER", "HOUSEKEEPING"],
+        roles: [Role.ADMIN, Role.MANAGER, Role.HOUSEKEEPING],
       },
     ],
   },
@@ -69,9 +71,9 @@ export const dashboardNav: NavGroup[] = [
     items: [
       {
         title: "Folios & Payments",
-        url: "/dashboard/billing",
+        url: "/billing",
         icon: Receipt,
-        roles: ["ADMIN", "MANAGER", "FRONT_DESK"],
+        roles: [Role.ADMIN, Role.MANAGER, Role.FRONT_DESK],
       },
     ],
   },
@@ -79,16 +81,16 @@ export const dashboardNav: NavGroup[] = [
     label: "Administration",
     items: [
       {
-        title: "Staff & Users",
-        url: "/dashboard/staff",
+        title: "Staff",
+        url: "/staff",
         icon: UserCog,
-        roles: ["ADMIN"],
+        roles: [Role.ADMIN],
       },
       {
         title: "Settings",
-        url: "/dashboard/settings",
+        url: "/settings",
         icon: Settings,
-        roles: ["ADMIN"],
+        roles: [Role.ADMIN],
       },
     ],
   },

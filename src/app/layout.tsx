@@ -5,6 +5,7 @@ import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/providers/theme-provider";
+import { Toaster } from "sonner"; 
 
 export const metadata: Metadata = {
   title: "Inn Flow",
@@ -30,6 +31,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TRPCReactProvider>{children}</TRPCReactProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
