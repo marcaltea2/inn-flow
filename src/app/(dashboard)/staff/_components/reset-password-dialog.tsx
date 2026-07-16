@@ -26,8 +26,18 @@ export function ResetPasswordDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const [directMode, setDirectMode] = useState(false);
   const [password, setPassword] = useState("");
-  const mutation = api.staff.resetPassword.useMutation({
+
+  const sendLinkMutation = api.staff.sendPasswordResetLink.useMutation({
+    onSuccess: () => {
+      toast.success(`Password reset link sent to ${staff.email}`);
+      onOpenChange(false);
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const directMutation = api.staff.resetPassword.useMutation({
     onSuccess: () => {
       toast.success(`Password reset for ${staff.email}`);
       setPassword("");
@@ -42,31 +52,56 @@ export function ResetPasswordDialog({
         <DialogHeader>
           <DialogTitle>Reset password</DialogTitle>
           <DialogDescription>
-            Set a new temporary password for {staff.email}.
+            {directMode
+              ? `Set a new temporary password for ${staff.email} directly.`
+              : `Send a password reset link to ${staff.email}. They'll set their own new password.`}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="newPassword">New password</Label>
-          <Input
-            id="newPassword"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            minLength={8}
-          />
-        </div>
+        {directMode && (
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="newPassword">New password</Label>
+            <Input
+              id="newPassword"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={8}
+            />
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => setDirectMode((v) => !v)}
+          className="text-muted-foreground hover:text-foreground text-left text-xs underline"
+        >
+          {directMode
+            ? "Send a reset link instead"
+            : "Set password directly instead (in-person onboarding)"}
+        </button>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button
-            disabled={password.length < 8 || mutation.isPending}
-            onClick={() => mutation.mutate({ userId: staff.id, newPassword: password })}
-          >
-            {mutation.isPending ? "Resetting…" : "Reset password"}
-          </Button>
+          {directMode ? (
+            <Button
+              disabled={password.length < 8 || directMutation.isPending}
+              onClick={() =>
+                directMutation.mutate({ userId: staff.id, newPassword: password })
+              }
+            >
+              {directMutation.isPending ? "Resetting…" : "Set password"}
+            </Button>
+          ) : (
+            <Button
+              disabled={sendLinkMutation.isPending}
+              onClick={() => sendLinkMutation.mutate({ userId: staff.id })}
+            >
+              {sendLinkMutation.isPending ? "Sending…" : "Send reset link"}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

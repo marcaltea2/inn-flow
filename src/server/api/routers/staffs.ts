@@ -6,6 +6,7 @@ import {
   updateStaffSchema,
   resetStaffPasswordSchema,
   setStaffActiveSchema,
+  sendPasswordResetLinkSchema,
 } from "~/server/validations/staff-validation";
 import {
   createStaff,
@@ -15,6 +16,7 @@ import {
   setStaffActive,
   resetStaffPassword,
   resendVerificationEmail,
+  sendPasswordResetLink,
 } from "~/server/services/staff-service";
 import { z } from "zod";
 
@@ -40,6 +42,10 @@ export const staffRouter = createTRPCRouter({
   resetPassword: permissionProcedure("staff", "manage")
     .input(resetStaffPasswordSchema)
     .mutation(({ input }) => resetStaffPassword(input.userId, input.newPassword)),
+
+  sendPasswordResetLink: permissionProcedure("staff", "manage")
+    .input(sendPasswordResetLinkSchema)
+    .mutation(({ input }) => sendPasswordResetLink(input.userId)),
 
   resendVerificationEmail: permissionProcedure("staff", "manage")
     .input(z.object({ userId: z.string().cuid() }))

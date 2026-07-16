@@ -7,6 +7,7 @@ import type {
   UpdateStaffInput,
 } from "../validations/staff-validation";
 import { issueVerificationEmail } from "~/server/services/email-verification";
+import { issuePasswordResetEmail } from "~/server/services/password-reset";
 
 const RESEND_COOLDOWN_MS = 1000 * 60 * 5; // 5 minutes
 
@@ -272,6 +273,25 @@ export async function resetStaffPassword(userId: string, newPassword: string) {
     data: { passwordHash },
   });
   return { success: true };
+}
+
+export async function sendPasswordResetLink(userId: string) {
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true },
+  });
+
+  if (!user) {
+    throw new TRPCError({ code: "NOT_FOUND", message: "Staff member not found." });
+  }
+
+  if (!user.email) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: "This account has no email set." });
+  }
+
+  await issuePasswordResetEmail(user.id, user.email);
+
+  return { sent: true };
 }
 
 export async function getAllStaff() {

@@ -28,6 +28,10 @@ export const resetStaffPasswordSchema = z.object({
   newPassword: z.string().min(8),
 });
 
+export const sendPasswordResetLinkSchema = z.object({
+  userId: z.string().cuid(),
+});
+
 export const setStaffActiveSchema = z.object({
   userId: z.string().cuid(),
   isActive: z.boolean(),
