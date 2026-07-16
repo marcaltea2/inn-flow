@@ -5,6 +5,7 @@ model User {
   image         String?
   passwordHash  String?   // null if this person only ever logs in via OAuth (Open Authorization)
   isActive      Boolean   @default(true)
+  isTempPassword Boolean @default(false)
   role          Role      @default(GUEST)
   accounts      Account[]
   sessions      Session[]

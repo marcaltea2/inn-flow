@@ -44,6 +44,7 @@ export async function createStaff(
         passwordHash,
         role: data.role,
         isActive: true,
+        isTempPassword: true,
         staff: {
           create: {
             employeeId: data.employeeId,
@@ -270,7 +271,7 @@ export async function resetStaffPassword(userId: string, newPassword: string) {
   const passwordHash = await bcrypt.hash(newPassword, 12);
   await db.user.update({
     where: { id: userId },
-    data: { passwordHash },
+    data: { passwordHash, isTempPassword: true },
   });
   return { success: true };
 }

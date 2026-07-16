@@ -20,6 +20,7 @@ declare module "next-auth" {
       role: Role;
       firstName: string;
       lastName: string;
+      isTempPassword: boolean;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -36,6 +37,7 @@ declare module "next-auth/jwt" {
     role: Role;
     firstName: string;
     lastName: string;
+    isTempPassword: boolean;
   }
 }
 
@@ -64,6 +66,11 @@ export const authConfig = {
         });
 
         if (!user?.passwordHash) return null;
+
+        if (!user.emailVerified) {
+          throw new Error("Please verify your email before signing in.");
+        }
+
         const valid = await bcrypt.compare(
           credentials.password as string,
           user.passwordHash,
@@ -111,6 +118,7 @@ export const authConfig = {
         ...session.user,
         id: user.id,
         role: user.role,
+        isTempPassword: user?.isTempPassword ?? false,
         firstName: profile?.firstName ?? "",
         lastName: profile?.lastName ?? "",
       };
