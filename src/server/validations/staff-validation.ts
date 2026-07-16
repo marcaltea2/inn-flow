@@ -15,6 +15,7 @@ export const createStaffSchema = z.object({
 
 export const updateStaffSchema = z.object({
   userId: z.string().cuid(),
+  email: z.string().email().toLowerCase().trim(),
   role: z.enum(STAFF_ROLES).optional(),
   employeeId: z.string().max(100).optional(),
   firstName: z.string().min(1).max(100),

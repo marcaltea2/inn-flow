@@ -14,6 +14,7 @@ import {
   updateStaff,
   setStaffActive,
   resetStaffPassword,
+  resendVerificationEmail,
 } from "~/server/services/staff-service";
 import { z } from "zod";
 
@@ -39,4 +40,8 @@ export const staffRouter = createTRPCRouter({
   resetPassword: permissionProcedure("staff", "manage")
     .input(resetStaffPasswordSchema)
     .mutation(({ input }) => resetStaffPassword(input.userId, input.newPassword)),
+
+  resendVerificationEmail: permissionProcedure("staff", "manage")
+    .input(z.object({ userId: z.string().cuid() }))
+    .mutation(({ input }) => resendVerificationEmail(input.userId)),
 });

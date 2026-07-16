@@ -39,7 +39,7 @@ export function StaffCreateDialog({
 
   const createMutation = api.staff.create.useMutation({
     onSuccess: () => {
-      toast.success("Staff account created");
+      toast.success("Staff account created — a verification email has been sent");
       form.reset();
       onOpenChange(false);
       onSuccess();

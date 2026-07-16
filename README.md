@@ -17,7 +17,7 @@ If you are not familiar with the different technologies used in this project, pl
 - [PostgreSql](https://console.neon.tech/)
 - [GoogleAuth](https://console.cloud.google.com)
 - [Shadcn](https://ui.shadcn.com/)
-
+- [Resend](https://resend.com/)
 ## Learn More
 
 To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:

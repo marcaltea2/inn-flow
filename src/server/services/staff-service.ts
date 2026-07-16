@@ -6,12 +6,16 @@ import type {
   CreateStaffInput,
   UpdateStaffInput,
 } from "../validations/staff-validation";
+import { issueVerificationEmail } from "~/server/services/email-verification";
+
+const RESEND_COOLDOWN_MS = 1000 * 60 * 5; // 5 minutes
 
 // Central projection — the "DTO" for staff records.
 // Never let passwordHash leave this file.
 const staffSelect = {
   id: true,
   email: true,
+  emailVerified: true, // FIX: was missing — StaffEditDialog badge needs this
   role: true,
   isActive: true,
   createdAt: true,
@@ -33,7 +37,7 @@ export async function createStaff(
   const passwordHash = await bcrypt.hash(data.password, 12);
 
   try {
-    return await db.user.create({
+    const newUser = await db.user.create({
       data: {
         email: data.email,
         passwordHash,
@@ -45,15 +49,19 @@ export async function createStaff(
             firstName: data.firstName,
             lastName: data.lastName,
             phone: data.phone,
-
             createdById: createdByUserId,
           },
         },
       },
       select: staffSelect,
     });
+
+    issueVerificationEmail(newUser.id, newUser.email!).catch((err) => {
+      console.error("Failed to send verification email:", err);
+    });
+
+    return newUser;
   } catch (err) {
-    // P2002 = unique constraint violation (email, or employeeId if you index it as @unique)
     if (
       err instanceof Prisma.PrismaClientKnownRequestError &&
       err.code === "P2002"
@@ -69,8 +77,11 @@ export async function createStaff(
   }
 }
 
-export async function updateStaff( data: UpdateStaffInput, updatedByUserId: string, ) {
-  const { userId, employeeId, firstName, lastName, phone, role } = data;
+export async function updateStaff(
+  data: UpdateStaffInput,
+  updatedByUserId: string,
+) {
+  const { userId, email, employeeId, firstName, lastName, phone, role } = data;
 
   // Guard: don't let the last remaining admin get demoted.
   if (role && role !== Role.ADMIN) {
@@ -92,22 +103,61 @@ export async function updateStaff( data: UpdateStaffInput, updatedByUserId: stri
   }
 
   try {
-    return await db.user.update({
+    const current = await db.user.findUnique({
+      where: { id: userId },
+      select: { email: true },
+    });
+
+    if (!current) {
+      throw new TRPCError({
+        code: "NOT_FOUND", // was CONFLICT — NOT_FOUND is the correct code for "record doesn't exist"
+        message: "Staff member not found.",
+      });
+    }
+
+    const emailChanged = current.email !== email;
+
+    if (emailChanged) {
+      const conflict = await db.user.findUnique({
+        where: { email },
+      });
+
+      if (conflict && conflict.id !== userId) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "That email is already in use by another account.",
+        });
+      }
+    }
+
+    const updatedUser = await db.user.update({
       where: { id: userId },
       data: {
         role,
+        email, // FIX: was missing — the actual write of the new email
+        ...(emailChanged && { emailVerified: null }), // FIX: was missing — mailbox unconfirmed until re-verified
         staff: {
-          update: { 
-            employeeId, 
-            firstName, 
-            lastName, 
+          update: {
+            employeeId,
+            firstName,
+            lastName,
             phone,
             updatedById: updatedByUserId,
-         },
+          },
         },
       },
       select: staffSelect,
     });
+
+    if (emailChanged) {
+      issueVerificationEmail(updatedUser.id, updatedUser.email!).catch(
+        (err) => {
+          console.error("Failed to send verification email:", err);
+        },
+      );
+    }
+
+    return updatedUser;
   } catch (err) {
     if (
       err instanceof Prisma.PrismaClientKnownRequestError &&
@@ -122,7 +172,59 @@ export async function updateStaff( data: UpdateStaffInput, updatedByUserId: stri
   }
 }
 
-export async function setStaffActive( userId: string, isActive: boolean, actingUserId: string,) {
+export async function resendVerificationEmail(userId: string) {
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, emailVerified: true },
+  });
+
+  if (!user) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Staff member not found.",
+    });
+  }
+
+  if (user.emailVerified) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Email is already verified.",
+    });
+  }
+
+  if (!user.email) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "This account has no email set.",
+    });
+  }
+
+  const recentToken = await db.emailVerificationToken.findFirst({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (recentToken) {
+    const elapsed = Date.now() - recentToken.createdAt.getTime();
+    if (elapsed < RESEND_COOLDOWN_MS) {
+      const secondsLeft = Math.ceil((RESEND_COOLDOWN_MS - elapsed) / 1000);
+      throw new TRPCError({
+        code: "TOO_MANY_REQUESTS",
+        message: `Please wait ${secondsLeft}s before resending.`,
+      });
+    }
+  }
+
+  await issueVerificationEmail(user.id, user.email);
+
+  return { sent: true };
+}
+
+export async function setStaffActive(
+  userId: string,
+  isActive: boolean,
+  actingUserId: string,
+) {
   if (userId === actingUserId && !isActive) {
     throw new TRPCError({
       code: "BAD_REQUEST",
@@ -151,14 +253,14 @@ export async function setStaffActive( userId: string, isActive: boolean, actingU
 
   return db.user.update({
     where: { id: userId },
-    data: { 
-        isActive,
-        staff: {
-          update: { 
-            updatedById: actingUserId,
-         },
+    data: {
+      isActive,
+      staff: {
+        update: {
+          updatedById: actingUserId,
         },
-     },
+      },
+    },
     select: staffSelect,
   });
 }
@@ -171,7 +273,6 @@ export async function resetStaffPassword(userId: string, newPassword: string) {
   });
   return { success: true };
 }
-
 
 export async function getAllStaff() {
   return db.user.findMany({
