@@ -3,7 +3,7 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import {
   validatePasswordResetToken,
 } from "~/server/services/password-reset";
-import { changeOwnPasswordSchema, completeResetPasswordSchema,checkEmailVerificationStatusSchema } from "~/server/validations/staff-validation";
+import { changeOwnPasswordSchema, completeResetPasswordSchema,checkEmailVerificationStatusSchema } from "~/server/validations/auth-validation";
 import { changeOwnPassword, completeResetPassword, checkEmailVerificationStatus} from "~/server/services/auth-service";
 
 export const authRouter = createTRPCRouter({

@@ -8,7 +8,7 @@ import { api } from "~/trpc/react";
 import {
   setNewPasswordSchema,
   type SetNewPasswordInput,
-} from "~/server/validations/staff-validation";
+} from "~/server/validations/auth-validation";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";

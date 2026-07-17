@@ -11,7 +11,7 @@ import { Label } from "~/components/ui/label";
 import {
   setNewPasswordSchema,
   type SetNewPasswordInput,
-} from "~/server/validations/staff-validation";
+} from "~/server/validations/auth-validation";
 
 export default function ChangePasswordPage() {
   const router = useRouter();
