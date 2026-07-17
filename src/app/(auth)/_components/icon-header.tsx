@@ -5,7 +5,7 @@ export function IconHeader({
 }: {
   icon: React.ReactNode;
   title: string;
-  description: string;
+  description: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col items-center gap-3 text-center">

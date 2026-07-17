@@ -109,7 +109,7 @@ export function ResetPasswordForm() {
         )}
         className="flex flex-col gap-4"
       >
-        <div className="flex flex-col gap-1.5">
+        <div className="space-y-2">
           <Label htmlFor="password">New password</Label>
           <Input
             id="password"
@@ -126,7 +126,7 @@ export function ResetPasswordForm() {
           )}
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="space-y-2">
           <Label htmlFor="confirmPassword">Confirm password</Label>
           <Input
             id="confirmPassword"

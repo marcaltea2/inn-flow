@@ -12,6 +12,9 @@ import {
   setNewPasswordSchema,
   type SetNewPasswordInput,
 } from "~/server/validations/auth-validation";
+import { CenteredCard } from "../_components/centered-card";
+import { IconHeader } from "../_components/icon-header";
+import { KeyRound } from "lucide-react";
 
 export default function ChangePasswordPage() {
   const router = useRouter();
@@ -32,45 +35,47 @@ export default function ChangePasswordPage() {
   });
 
   return (
-    <form
-      onSubmit={form.handleSubmit((values) =>
-        changeOwnPasswordMutation.mutate({ newPassword: values.password }),
-      )}
-      className="mx-auto flex max-w-sm flex-col gap-4 pt-16"
-    >
-      <h1 className="text-xl font-semibold">Set your password</h1>
-      <p className="text-muted-foreground text-sm">
-        You&apos;re using a temporary password. Please set your own before
-        continuing.
-      </p>
+    <CenteredCard>
+      <IconHeader
+        icon={<KeyRound className="text-foreground size-6" />}
+        title="Set your password"
+        description="You're using a temporary password. Please set your own before continuing."
+      />
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="password">New password</Label>
-        <Input id="password" type="password" {...form.register("password")} />
-        {form.formState.errors.password && (
-          <p className="text-destructive text-sm">
-            {form.formState.errors.password.message}
-          </p>
+      <form
+        onSubmit={form.handleSubmit((values) =>
+          changeOwnPasswordMutation.mutate({ newPassword: values.password }),
         )}
-      </div>
+        className="flex flex-col gap-4"
+      >
+        <div className="space-y-2">
+          <Label htmlFor="password">New password</Label>
+          <Input id="password" type="password" {...form.register("password")} />
+          {form.formState.errors.password && (
+            <p className="text-destructive text-sm">
+              {form.formState.errors.password.message}
+            </p>
+          )}
+        </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="confirmPassword">Confirm password</Label>
-        <Input
-          id="confirmPassword"
-          type="password"
-          {...form.register("confirmPassword")}
-        />
-        {form.formState.errors.confirmPassword && (
-          <p className="text-destructive text-sm">
-            {form.formState.errors.confirmPassword.message}
-          </p>
-        )}
-      </div>
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Confirm password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            {...form.register("confirmPassword")}
+          />
+          {form.formState.errors.confirmPassword && (
+            <p className="text-destructive text-sm">
+              {form.formState.errors.confirmPassword.message}
+            </p>
+          )}
+        </div>
 
-      <Button type="submit" disabled={changeOwnPasswordMutation.isPending}>
-        {changeOwnPasswordMutation.isPending ? "Saving…" : "Set new password"}
-      </Button>
-    </form>
+        <Button type="submit" disabled={changeOwnPasswordMutation.isPending}>
+          {changeOwnPasswordMutation.isPending ? "Saving…" : "Set new password"}
+        </Button>
+      </form>
+    </CenteredCard>
   );
 }
