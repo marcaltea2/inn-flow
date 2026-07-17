@@ -1,7 +1,6 @@
-// app/(auth)/forgot-password/submitted-email.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, MailCheck } from "lucide-react";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
@@ -11,24 +10,18 @@ import { IconHeader } from "../../_components/icon-header";
 const RESEND_COOLDOWN_S = 120;
 
 export function SubmittedEmail({ email }: { email: string }) {
-  const [cooldown, setCooldown] = useState(0);
+  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_S);
 
   const mutation = api.auth.forgotPassword.useMutation({
-    onSuccess: () => startCooldown(),
+    onSuccess: () => setCooldown(RESEND_COOLDOWN_S),
   });
 
-  function startCooldown() {
-    setCooldown(RESEND_COOLDOWN_S);
+  useEffect(() => {
     const interval = setInterval(() => {
-      setCooldown((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
-      });
+      setCooldown((prev) => (prev <= 1 ? 0 : prev - 1));
     }, 1000);
-  }
+    return () => clearInterval(interval);
+  }, []); // runs once, ticks forever — no missing deps, since setCooldown's updater reads `prev`, not the outer `cooldown`
 
   return (
     <CenteredCard>
