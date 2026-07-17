@@ -1,10 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { KeyRound, ShieldX, ArrowLeft, Loader2 } from "lucide-react";
+import {
+  KeyRound,
+  ShieldX,
+  ArrowLeft,
+  Loader2,
+  CircleCheck,
+} from "lucide-react";
 import { api } from "~/trpc/react";
 import {
   setNewPasswordSchema,
@@ -18,8 +25,8 @@ import { IconHeader } from "../../_components/icon-header";
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const token = searchParams.get("token") ?? "";
+  const [isComplete, setIsComplete] = useState(false);
 
   const form = useForm<SetNewPasswordInput>({
     resolver: zodResolver(setNewPasswordSchema),
@@ -38,11 +45,28 @@ export function ResetPasswordForm() {
         toast.error("This link is invalid or has expired.");
         return;
       }
-      toast.success("Password updated. You can now sign in.");
-      router.push("/login");
+      setIsComplete(true);
     },
     onError: (err) => toast.error(err.message),
   });
+
+  if (isComplete) {
+    return (
+      <CenteredCard>
+        <IconHeader
+          icon={<CircleCheck className="text-foreground size-6" />}
+          title="Your password has been successfully reset"
+          description="Your password has been reset. You can now sign in with your new password."
+        />
+        <Button
+          className="w-full"
+          onClick={() => (window.location.href = "/login")}
+        >
+          Back to sign in
+        </Button>
+      </CenteredCard>
+    );
+  }
 
   if (!token) {
     return (
