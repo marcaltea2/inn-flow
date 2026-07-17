@@ -33,7 +33,7 @@ export async function issuePasswordResetEmail(userId: string, email: string) {
     subject: "Reset your inn-flow password",
     html: `
       <p>Hi,</p>
-      <p>A password reset was requested for your inn-flow staff account.</p>
+      <p>A password reset was requested for your inn-flow account.</p>
       <p><a href="${resetUrl}">Set a new password</a></p>
       <p>This link expires in 1 hour. If you didn't request this, you can ignore it — your password won't change.</p>
     `,
