@@ -1,10 +1,18 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { validatePasswordResetToken } from "~/server/services/password-reset";
 import {
-  validatePasswordResetToken,
-} from "~/server/services/password-reset";
-import { changeOwnPasswordSchema, completeResetPasswordSchema,checkEmailVerificationStatusSchema } from "~/server/validations/auth-validation";
-import { changeOwnPassword, completeResetPassword, checkEmailVerificationStatus} from "~/server/services/auth-service";
+  changeOwnPasswordSchema,
+  completeResetPasswordSchema,
+  checkEmailVerificationStatusSchema,
+  forgotPasswordSchema,
+} from "~/server/validations/auth-validation";
+import {
+  changeOwnPassword,
+  completeResetPassword,
+  checkEmailVerificationStatus,
+  forgotPassword,
+} from "~/server/services/auth-service";
 
 export const authRouter = createTRPCRouter({
   validateResetToken: publicProcedure
@@ -13,13 +21,21 @@ export const authRouter = createTRPCRouter({
 
   completePasswordReset: publicProcedure
     .input(completeResetPasswordSchema)
-    .mutation(({ input }) =>completeResetPassword(input.token, input.newPassword)),
+    .mutation(({ input }) =>
+      completeResetPassword(input.token, input.newPassword),
+    ),
 
   changeOwnPassword: protectedProcedure
     .input(changeOwnPasswordSchema)
-    .mutation(({ input, ctx }) => changeOwnPassword(ctx.session.user.id, input.newPassword)),
+    .mutation(({ input, ctx }) =>
+      changeOwnPassword(ctx.session.user.id, input.newPassword),
+    ),
 
-  checkEmailVerificationStatus:publicProcedure
+  forgotPassword: publicProcedure
+    .input(forgotPasswordSchema)
+    .mutation(({ input }) => forgotPassword(input.email)),
+
+  checkEmailVerificationStatus: publicProcedure
     .input(checkEmailVerificationStatusSchema)
-    .query(({ input }) =>checkEmailVerificationStatus(input.email)),
+    .query(({ input }) => checkEmailVerificationStatus(input.email)),
 });

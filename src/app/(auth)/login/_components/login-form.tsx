@@ -64,7 +64,6 @@ export function LoginForm({
       redirect: false,
       callbackUrl,
     });
-    
 
     setIsSubmitting(false);
 
@@ -96,6 +95,7 @@ export function LoginForm({
               id="email"
               type="email"
               autoComplete="email"
+              placeholder="Enter your email"
               disabled={isSubmitting}
               {...form.register("email")}
             />
@@ -112,6 +112,7 @@ export function LoginForm({
               id="password"
               type="password"
               autoComplete="current-password"
+              placeholder="Enter your password"
               disabled={isSubmitting}
               {...form.register("password")}
             />
@@ -120,6 +121,15 @@ export function LoginForm({
                 {form.formState.errors.password.message}
               </p>
             )}
+          </div>
+
+          <div className="flex items-center justify-end">
+            <a
+              href="/forgot-password"
+              className="text-muted-foreground text-xs hover:underline"
+            >
+              Forgot password?
+            </a>
           </div>
 
           {formError && (

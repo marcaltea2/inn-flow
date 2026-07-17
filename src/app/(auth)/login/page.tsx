@@ -17,7 +17,8 @@ export default async function StaffLoginPage({
     <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+          <h1 className="text-2xl font-semibold tracking-tight mb-1">Welcome Back to InnFlow</h1>
+            <p className="text-sm text-muted-foreground">Enter your email and  password to continue.</p>
         </div>
         <LoginForm callbackUrl={callbackUrl ?? "/"} error={error} />
       </div>

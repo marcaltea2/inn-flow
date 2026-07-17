@@ -28,5 +28,10 @@ export const checkEmailVerificationStatusSchema = z.object({
   email: z.string().email().toLowerCase().trim(),
 });
 
+export const forgotPasswordSchema = z.object({
+  email: z.string().email().toLowerCase().trim(),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type SetNewPasswordInput = z.infer<typeof setNewPasswordSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
