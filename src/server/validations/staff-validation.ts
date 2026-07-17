@@ -1,12 +1,17 @@
 import { z } from "zod";
 import { Role } from "@prisma/client";
 
-export const STAFF_ROLES = [Role.ADMIN, Role.MANAGER, Role.FRONT_DESK, Role.HOUSEKEEPING] as const;
+export const STAFF_ROLES = [
+  Role.ADMIN,
+  Role.MANAGER,
+  Role.FRONT_DESK,
+  Role.HOUSEKEEPING,
+] as const;
 
 export const createStaffSchema = z.object({
   email: z.string().email().toLowerCase().trim(),
   password: z.string().min(8),
-  role: z.enum(STAFF_ROLES), 
+  role: z.enum(STAFF_ROLES),
   employeeId: z.string().max(100).optional(),
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
@@ -33,7 +38,6 @@ export const setNewPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-
 export const resetStaffPasswordSchema = z.object({
   userId: z.string().cuid(),
   newPassword: z.string().min(8),
@@ -55,6 +59,10 @@ export const sendPasswordResetLinkSchema = z.object({
 export const setStaffActiveSchema = z.object({
   userId: z.string().cuid(),
   isActive: z.boolean(),
+});
+
+export const checkEmailVerificationStatusSchema = z.object({
+  email: z.string().email().toLowerCase().trim(),
 });
 
 export type CreateStaffInput = z.infer<typeof createStaffSchema>;

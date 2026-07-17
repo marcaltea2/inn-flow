@@ -3,8 +3,8 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import {
   validatePasswordResetToken,
 } from "~/server/services/password-reset";
-import { changeOwnPasswordSchema, completeResetPasswordSchema } from "~/server/validations/staff-validation";
-import { changeOwnPassword, completeResetPassword } from "~/server/services/auth-service";
+import { changeOwnPasswordSchema, completeResetPasswordSchema,checkEmailVerificationStatusSchema } from "~/server/validations/staff-validation";
+import { changeOwnPassword, completeResetPassword, checkEmailVerificationStatus} from "~/server/services/auth-service";
 
 export const authRouter = createTRPCRouter({
   validateResetToken: publicProcedure
@@ -18,4 +18,8 @@ export const authRouter = createTRPCRouter({
   changeOwnPassword: protectedProcedure
     .input(changeOwnPasswordSchema)
     .mutation(({ input, ctx }) => changeOwnPassword(ctx.session.user.id, input.newPassword)),
+
+  checkEmailVerificationStatus:publicProcedure
+    .input(checkEmailVerificationStatusSchema)
+    .query(({ input }) =>checkEmailVerificationStatus(input.email)),
 });

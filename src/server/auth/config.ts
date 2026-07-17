@@ -66,10 +66,7 @@ export const authConfig = {
         });
 
         if (!user?.passwordHash) return null;
-
-        if (!user.emailVerified) {
-          throw new Error("Please verify your email before signing in.");
-        }
+        if (!user.emailVerified) return null;
 
         const valid = await bcrypt.compare(
           credentials.password as string,

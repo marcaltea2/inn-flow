@@ -15,3 +15,15 @@ export async function changeOwnPassword(userId: string, newPassword: string){
   return { success: true };
 }
 
+export async function checkEmailVerificationStatus(email: string){
+ const user = await db.user.findUnique({
+      where: { email },
+      select: { emailVerified: true, passwordHash: true },
+    });
+
+    if (!user?.passwordHash) 
+        return { needsVerification: false };
+
+    return { needsVerification: !user.emailVerified };
+}
+
