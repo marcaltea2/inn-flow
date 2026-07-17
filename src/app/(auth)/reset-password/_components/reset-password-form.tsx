@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { KeyRound, ShieldX, ArrowLeft, Loader2 } from "lucide-react";
 import { api } from "~/trpc/react";
 import {
   setNewPasswordSchema,
@@ -12,6 +13,8 @@ import {
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { CenteredCard } from "../../_components/centered-card";
+import { IconHeader } from "../../_components/icon-header";
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -42,58 +45,111 @@ export function ResetPasswordForm() {
   });
 
   if (!token) {
-    return <p>Missing reset token.</p>;
+    return (
+      <CenteredCard>
+        <IconHeader
+          icon={<ShieldX className="text-foreground size-6" />}
+          title="Missing reset link"
+          description="This page needs a valid reset link to continue."
+        />
+
+        <a
+          href="/forgot-password"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1 text-sm"
+        >
+          <ArrowLeft className="size-3.5" />
+          Request a new link
+        </a>
+      </CenteredCard>
+    );
   }
 
   if (isLoading) {
-    return <p>Checking link…</p>;
+    return (
+      <CenteredCard>
+        <div className="flex flex-col items-center gap-3 py-6 text-center">
+          <Loader2 className="text-muted-foreground size-6 animate-spin" />
+          <p className="text-muted-foreground text-sm">Checking your link…</p>
+        </div>
+      </CenteredCard>
+    );
   }
 
   if (!validation?.ok) {
     return (
-      <p>
-        This link is invalid or has expired. Ask your admin to send a new
-        password reset link.
-      </p>
+      <CenteredCard>
+        <IconHeader
+          icon={<ShieldX className="text-foreground size-6" />}
+          title="Link expired"
+          description="This reset link is invalid or has expired. Request a new one to continue."
+        />
+
+        <a
+          href="/forgot-password"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1 text-sm"
+        >
+          <ArrowLeft className="size-3.5" />
+          Request a new link
+        </a>
+      </CenteredCard>
     );
   }
 
   return (
-    <form
-      onSubmit={form.handleSubmit((values) =>
-        completeMutation.mutate({ token, newPassword: values.password }),
-      )}
-      className="mx-auto flex max-w-sm flex-col gap-4 pt-16"
-    >
-      <h1 className="text-xl font-semibold">Set a new password</h1>
+    <CenteredCard>
+      <IconHeader
+        icon={<KeyRound className="text-foreground size-6" />}
+        title="Set a new password"
+        description="Choose a strong password you haven't used before."
+      />
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="password">New password</Label>
-        <Input id="password" type="password" {...form.register("password")} />
-        {form.formState.errors.password && (
-          <p className="text-destructive text-sm">
-            {form.formState.errors.password.message}
-          </p>
+      <form
+        onSubmit={form.handleSubmit((values) =>
+          completeMutation.mutate({ token, newPassword: values.password }),
         )}
-      </div>
+        className="flex flex-col gap-4"
+      >
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="password">New password</Label>
+          <Input
+            id="password"
+            type="password"
+            autoComplete="new-password"
+            placeholder="Enter your password"
+            autoFocus
+            {...form.register("password")}
+          />
+          {form.formState.errors.password && (
+            <p className="text-destructive text-sm">
+              {form.formState.errors.password.message}
+            </p>
+          )}
+        </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="confirmPassword">Confirm password</Label>
-        <Input
-          id="confirmPassword"
-          type="password"
-          {...form.register("confirmPassword")}
-        />
-        {form.formState.errors.confirmPassword && (
-          <p className="text-destructive text-sm">
-            {form.formState.errors.confirmPassword.message}
-          </p>
-        )}
-      </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="confirmPassword">Confirm password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            placeholder="Enter your password"
+            {...form.register("confirmPassword")}
+          />
+          {form.formState.errors.confirmPassword && (
+            <p className="text-destructive text-sm">
+              {form.formState.errors.confirmPassword.message}
+            </p>
+          )}
+        </div>
 
-      <Button type="submit" disabled={completeMutation.isPending}>
-        {completeMutation.isPending ? "Saving…" : "Set new password"}
-      </Button>
-    </form>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={completeMutation.isPending}
+        >
+          {completeMutation.isPending ? "Saving…" : "Set new password"}
+        </Button>
+      </form>
+    </CenteredCard>
   );
 }
