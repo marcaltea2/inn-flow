@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Role } from "@prisma/client";
+import { optionalString } from "./shared";
 
 export const STAFF_ROLES = [
   Role.ADMIN,
@@ -12,20 +13,20 @@ export const createStaffSchema = z.object({
   email: z.string().email().toLowerCase().trim(),
   password: z.string().min(8),
   role: z.enum(STAFF_ROLES),
-  employeeId: z.string().max(100).optional(),
+  employeeId: optionalString(z.string().max(100)),
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
-  phone: z.string().max(11).optional(),
+  phone: optionalString(z.string().max(11)),
 });
 
 export const updateStaffSchema = z.object({
   userId: z.string().cuid(),
   email: z.string().email().toLowerCase().trim(),
-  role: z.enum(STAFF_ROLES).optional(),
-  employeeId: z.string().max(100).optional(),
+  role: z.enum(STAFF_ROLES),
+  employeeId: optionalString(z.string().max(100)),
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
-  phone: z.string().max(11).optional(),
+  phone: optionalString(z.string().max(11)),
 });
 
 export const resetStaffPasswordSchema = z.object({

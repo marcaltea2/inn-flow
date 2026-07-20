@@ -93,6 +93,7 @@ export function StaffEditDialog({
 
         <form
           onSubmit={form.handleSubmit((values) => {
+            console.log(values);
             if (
               emailChanged &&
               !window.confirm(
@@ -109,10 +110,23 @@ export function StaffEditDialog({
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="firstName">First name</Label>
               <Input id="firstName" {...form.register("firstName")} />
+
+              {form.formState.errors.firstName && (
+                <p className="text-destructive text-sm">
+                  {form.formState.errors.firstName.message}
+                </p>
+              )}
             </div>
+
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="lastName">Last name</Label>
               <Input id="lastName" {...form.register("lastName")} />
+
+              {form.formState.errors.lastName && (
+                <p className="text-destructive text-sm">
+                  {form.formState.errors.lastName.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -141,6 +155,11 @@ export function StaffEditDialog({
               disabled={!emailUnlocked}
               {...form.register("email")}
             />
+            {form.formState.errors.email && (
+              <p className="text-destructive text-sm">
+                {form.formState.errors.email.message}
+              </p>
+            )}
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-xs">
                 {emailUnlocked
@@ -152,9 +171,11 @@ export function StaffEditDialog({
                   type="button"
                   onClick={() => resendMutation.mutate({ userId: staff.id })}
                   disabled={resendMutation.isPending}
-                  className="text-xs underline text-muted-foreground hover:text-foreground shrink-0"
+                  className="text-muted-foreground hover:text-foreground shrink-0 text-xs underline"
                 >
-                  {resendMutation.isPending ? "Sending…" : "Resend verification"}
+                  {resendMutation.isPending
+                    ? "Sending…"
+                    : "Resend verification"}
                 </button>
               )}
             </div>
@@ -184,12 +205,24 @@ export function StaffEditDialog({
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="employeeId">Employee ID</Label>
               <Input id="employeeId" {...form.register("employeeId")} />
+
+              {form.formState.errors.employeeId && (
+                <p className="text-destructive text-sm">
+                  {form.formState.errors.employeeId.message}
+                </p>
+              )}
             </div>
           </div>
 
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="phone">Phone</Label>
             <Input id="phone" {...form.register("phone")} />
+
+            {form.formState.errors.phone && (
+              <p className="text-destructive text-sm">
+                {form.formState.errors.phone.message}
+              </p>
+            )}
           </div>
 
           <DialogFooter>
