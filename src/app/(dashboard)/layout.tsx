@@ -12,12 +12,16 @@ export default async function DashboardLayout({
   const session = await auth();
 
   if (!session) redirect("/login");
-  console.log("session", session);
+
+  if (session.user.isTempPassword) {
+    redirect("/change-password");
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar
         user={{
-          name: session.user.firstName  + " " + session.user.lastName,
+          name: session.user.firstName + " " + session.user.lastName,
           email: session.user.email ?? "",
           role: session.user.role,
           image: session.user.image,

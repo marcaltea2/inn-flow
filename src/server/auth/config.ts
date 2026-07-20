@@ -3,7 +3,7 @@ import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider, { type GoogleProfile } from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
-import type { Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import "next-auth/jwt";
 import { db } from "~/server/db";
 
@@ -20,6 +20,7 @@ declare module "next-auth" {
       role: Role;
       firstName: string;
       lastName: string;
+      isTempPassword: boolean;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -36,6 +37,7 @@ declare module "next-auth/jwt" {
     role: Role;
     firstName: string;
     lastName: string;
+    isTempPassword: boolean;
   }
 }
 
@@ -64,6 +66,9 @@ export const authConfig = {
         });
 
         if (!user?.passwordHash) return null;
+        // if (user.role !== Role.GUEST && !user.emailVerified)  return null;
+        
+
         const valid = await bcrypt.compare(
           credentials.password as string,
           user.passwordHash,
@@ -111,6 +116,7 @@ export const authConfig = {
         ...session.user,
         id: user.id,
         role: user.role,
+        isTempPassword: user?.isTempPassword ?? false,
         firstName: profile?.firstName ?? "",
         lastName: profile?.lastName ?? "",
       };

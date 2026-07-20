@@ -4,7 +4,7 @@ model Guest {
   user           User?         @relation(fields: [userId], references: [id])
   firstName      String
   lastName       String
-  email          String?       @unique
+  email          String?      
   phone          String?
   dateOfBirth    DateTime? // commonly required on a guest registration card; also relevant for age-restricted bookings
   nationality    String? // many jurisdictions legally require this on file for hotel guests

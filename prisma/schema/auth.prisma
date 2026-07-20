@@ -5,11 +5,14 @@ model User {
   image         String?
   passwordHash  String?   // null if this person only ever logs in via OAuth (Open Authorization)
   isActive      Boolean   @default(true)
+  isTempPassword Boolean @default(false)
   role          Role      @default(GUEST)
   accounts      Account[]
   sessions      Session[]
   staff         Staff?    // present only if role is a staff role
   guest         Guest?    // present only if role is GUEST
+  emailVerificationTokens EmailVerificationToken[]
+  passwordResetTokens     PasswordResetToken[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -45,4 +48,27 @@ model VerificationToken {
   token      String   @unique
   expires    DateTime
   @@unique([identifier, token])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  email     String   // snapshot of the address being verified at issue time
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
