@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { optionalString } from "./shared";
 
 const passwordField = z
   .string()
@@ -11,16 +12,16 @@ const guestNameFields = {
 
 export const createWalkInGuestSchema = z.object({
   ...guestNameFields,
-  email: z.string().email().toLowerCase().trim().optional(),
-  phone: z.string().max(20).optional(),
+  email: optionalString(z.string().email().toLowerCase().trim()), 
+  phone: optionalString(z.string().max(11)),
 });
 
 export const completeGuestRegistrationCardSchema = z.object({
   guestId: z.string().cuid(),
   dateOfBirth: z.coerce.date().optional(),
-  nationality: z.string().max(100).optional(),
-  idType: z.string().max(50).optional(),
-  idNumber: z.string().max(100).optional(),
+  nationality: optionalString(z.string().max(100)),
+  idType: optionalString(z.string().max(50)),
+  idNumber: optionalString(z.string().max(100)),
   // idDocumentUrl is set via the upload flow separately, not typed in directly here
 });
 

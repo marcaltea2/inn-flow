@@ -41,6 +41,7 @@ export async function registerGuest(
         isActive: true,
         guest: {
           create: {
+            email: data.email,
             firstName: data.firstName,
             lastName: data.lastName,
           },
