@@ -5,6 +5,7 @@ import { db } from "~/server/db";
 import type {
   CreateStaffInput,
   UpdateStaffInput,
+  GetAllStaffInput
 } from "../validations/staff-validation";
 import { issueVerificationEmail } from "~/server/services/email-verification";
 import { issuePasswordResetEmail } from "~/server/services/password-reset";
@@ -295,16 +296,39 @@ export async function sendPasswordResetLink(userId: string) {
   return { sent: true };
 }
 
-export async function getAllStaff() {
-  return db.user.findMany({
-    where: {
-      role: {
-        in: [Role.ADMIN, Role.MANAGER, Role.FRONT_DESK, Role.HOUSEKEEPING],
-      },
-    },
-    select: staffSelect,
-    orderBy: { createdAt: "desc" },
-  });
+export async function getAllStaff(input: GetAllStaffInput) {
+  const { search, page, pageSize } = input;
+
+  const where: Prisma.UserWhereInput = {
+    role: { in: [Role.ADMIN, Role.MANAGER, Role.FRONT_DESK, Role.HOUSEKEEPING] },
+    ...(search && {
+      OR: [
+        { email: { contains: search, mode: "insensitive" } },
+        { staff: { firstName: { contains: search, mode: "insensitive" } } },
+        { staff: { lastName: { contains: search, mode: "insensitive" } } },
+        { staff: { employeeId: { contains: search, mode: "insensitive" } } },
+      ],
+    }),
+  };
+
+  const [staff, total] = await Promise.all([
+    db.user.findMany({
+      where,
+      select: staffSelect,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    db.user.count({ where }),
+  ]);
+
+  return {
+    staff,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  };
 }
 
 export async function getStaffById(userId: string) {

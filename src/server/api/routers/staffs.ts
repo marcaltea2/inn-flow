@@ -1,4 +1,4 @@
-import { createTRPCRouter} from "../trpc";
+import { createTRPCRouter } from "../trpc";
 import { permissionProcedure } from "../rbac";
 import {
   createStaffSchema,
@@ -6,6 +6,7 @@ import {
   resetStaffPasswordSchema,
   setStaffActiveSchema,
   sendPasswordResetLinkSchema,
+  getAllStaffSchema,
 } from "~/server/validations/staff-validation";
 import {
   createStaff,
@@ -20,7 +21,9 @@ import {
 import { z } from "zod";
 
 export const staffRouter = createTRPCRouter({
-  getAll: permissionProcedure("staff", "view").query(() => getAllStaff()),
+  getAll: permissionProcedure("staff", "view")
+    .input(getAllStaffSchema)
+    .query(({ input }) => getAllStaff(input)),
 
   getById: permissionProcedure("staff", "view")
     .input(z.object({ userId: z.string().cuid() }))
@@ -36,11 +39,15 @@ export const staffRouter = createTRPCRouter({
 
   setActive: permissionProcedure("staff", "manage")
     .input(setStaffActiveSchema)
-    .mutation(({ input, ctx }) => setStaffActive(input.userId, input.isActive, ctx.session.user.id)),
+    .mutation(({ input, ctx }) =>
+      setStaffActive(input.userId, input.isActive, ctx.session.user.id),
+    ),
 
   resetPassword: permissionProcedure("staff", "manage")
     .input(resetStaffPasswordSchema)
-    .mutation(({ input }) => resetStaffPassword(input.userId, input.newPassword)),
+    .mutation(({ input }) =>
+      resetStaffPassword(input.userId, input.newPassword),
+    ),
 
   sendPasswordResetLink: permissionProcedure("staff", "manage")
     .input(sendPasswordResetLinkSchema)

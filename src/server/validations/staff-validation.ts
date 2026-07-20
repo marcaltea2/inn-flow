@@ -34,7 +34,6 @@ export const resetStaffPasswordSchema = z.object({
   newPassword: z.string().min(8),
 });
 
-
 export const sendPasswordResetLinkSchema = z.object({
   userId: z.string().cuid(),
 });
@@ -44,7 +43,15 @@ export const setStaffActiveSchema = z.object({
   isActive: z.boolean(),
 });
 
+export const getAllStaffSchema = z
+  .object({
+    search: z.string().trim().optional(),
+    page: z.coerce.number().int().min(1).default(1),
+    pageSize: z.coerce.number().int().min(1).max(100).default(10),
+  })
+  .optional()
+  .default({});
 
+export type GetAllStaffInput = z.infer<typeof getAllStaffSchema>;
 export type CreateStaffInput = z.infer<typeof createStaffSchema>;
 export type UpdateStaffInput = z.infer<typeof updateStaffSchema>;
-
