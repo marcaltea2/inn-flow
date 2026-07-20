@@ -123,6 +123,12 @@ export function LoginForm({
             )}
           </div>
 
+          {formError && (
+            <p role="alert" className="text-destructive text-sm">
+              {formError}
+            </p>
+          )}
+
           <div className="flex items-center justify-end">
             <a
               href="/forgot-password"
@@ -131,12 +137,6 @@ export function LoginForm({
               Forgot password?
             </a>
           </div>
-
-          {formError && (
-            <p role="alert" className="text-destructive text-sm">
-              {formError}
-            </p>
-          )}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 size-4 animate-spin" />}
@@ -159,6 +159,17 @@ export function LoginForm({
             <GoogleIcon className="mr-2 size-4" />
             Continue with Google
           </Button>
+
+          <div className="mt-2 flex justify-center items-center">
+            <span className="text-muted-foreground text-xs">
+              Don&apos;t have an account yet?{" "}
+              <a
+                href="/signup"
+                className="font-bold text-foreground hover:underline"
+              > Sign up</a>
+            </span>
+          </div>
+          
         </form>
       </CardContent>
     </Card>

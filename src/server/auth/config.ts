@@ -3,7 +3,7 @@ import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider, { type GoogleProfile } from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
-import type { Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import "next-auth/jwt";
 import { db } from "~/server/db";
 
@@ -66,7 +66,8 @@ export const authConfig = {
         });
 
         if (!user?.passwordHash) return null;
-        if (!user.emailVerified) return null;
+        // if (user.role !== Role.GUEST && !user.emailVerified)  return null;
+        
 
         const valid = await bcrypt.compare(
           credentials.password as string,

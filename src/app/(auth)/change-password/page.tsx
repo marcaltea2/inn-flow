@@ -50,7 +50,7 @@ export default function ChangePasswordPage() {
       >
         <div className="space-y-2">
           <Label htmlFor="password">New password</Label>
-          <Input id="password" type="password" {...form.register("password")} />
+          <Input id="password" type="password" placeholder="Enter your password" {...form.register("password")} />
           {form.formState.errors.password && (
             <p className="text-destructive text-sm">
               {form.formState.errors.password.message}
@@ -63,6 +63,7 @@ export default function ChangePasswordPage() {
           <Input
             id="confirmPassword"
             type="password"
+            placeholder="Enter your password"
             {...form.register("confirmPassword")}
           />
           {form.formState.errors.confirmPassword && (

@@ -1,4 +1,3 @@
-// server/api/routers/staff.ts
 import { createTRPCRouter} from "../trpc";
 import { permissionProcedure } from "../rbac";
 import {

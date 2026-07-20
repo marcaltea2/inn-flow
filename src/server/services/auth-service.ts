@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { db } from "~/server/db";
 import { consumePasswordResetToken } from "./password-reset";
 import { issuePasswordResetEmail } from "./password-reset";
+import { Role } from "@prisma/client";
 
 export async function completeResetPassword(
   token: string,
@@ -37,10 +38,10 @@ export async function forgotPassword(email: string) {
 export async function checkEmailVerificationStatus(email: string) {
   const user = await db.user.findUnique({
     where: { email },
-    select: { emailVerified: true, passwordHash: true },
+    select: { emailVerified: true, passwordHash: true, role: true },
   });
 
-  if (!user?.passwordHash) return { needsVerification: false };
+  if (user?.role === Role.GUEST || !user?.passwordHash) return { needsVerification: false };
 
   return { needsVerification: !user.emailVerified };
 }

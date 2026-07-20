@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
-import { LoginForm } from "./_components/login-form";
+import { SignupForm } from "./_components/signup-form";
 
-export default async function LoginPage({
+
+export default async function SignupPage({
   searchParams,
 }: {
   searchParams: Promise<{ callbackUrl?: string; error?: string }>;
@@ -14,13 +15,17 @@ export default async function LoginPage({
   if (session) redirect(callbackUrl ?? "/");
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
+    <div className="bg-muted/40 flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight mb-1">Welcome Back to InnFlow</h1>
-            <p className="text-sm text-muted-foreground">Enter your email and  password to continue.</p>
+          <h1 className="mb-1 text-2xl font-semibold tracking-tight">
+            Create an Account
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Please enter your details to create an account.
+          </p>
         </div>
-        <LoginForm callbackUrl={callbackUrl ?? "/"} error={error} />
+        <SignupForm callbackUrl={callbackUrl ?? "/"} error={error} />
       </div>
     </div>
   );
