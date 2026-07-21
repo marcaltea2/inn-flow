@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 
-type StaffMember = RouterOutputs["staff"]["getAll"][number];
+type StaffMember = RouterOutputs["staff"]["getAll"]["staff"][number];
 
 export function DeactivateStaffDialog({
   staff,

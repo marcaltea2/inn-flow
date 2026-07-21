@@ -5,7 +5,7 @@ import { db } from "~/server/db";
 import type {
   CreateStaffInput,
   UpdateStaffInput,
-  GetAllStaffInput
+  GetAllStaffInput,
 } from "../validations/staff-validation";
 import { issueVerificationEmail } from "~/server/services/email-verification";
 import { issuePasswordResetEmail } from "~/server/services/password-reset";
@@ -141,10 +141,10 @@ export async function updateStaff(
         ...(emailChanged && { emailVerified: null }), // FIX: was missing — mailbox unconfirmed until re-verified
         staff: {
           update: {
-            employeeId: data.employeeId?? null,
+            employeeId: data.employeeId ?? null,
             firstName,
             lastName,
-            phone: data.phone?? null,
+            phone: data.phone ?? null,
             updatedById: updatedByUserId,
           },
         },
@@ -260,6 +260,8 @@ export async function setStaffActive(
       isActive,
       staff: {
         update: {
+          deactivatedAt: isActive ? null : new Date(),
+          deactivatedById: isActive ? null : actingUserId,
           updatedById: actingUserId,
         },
       },
@@ -284,11 +286,17 @@ export async function sendPasswordResetLink(userId: string) {
   });
 
   if (!user) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "Staff member not found." });
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Staff member not found.",
+    });
   }
 
   if (!user.email) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "This account has no email set." });
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "This account has no email set.",
+    });
   }
 
   await issuePasswordResetEmail(user.id, user.email);
@@ -300,7 +308,9 @@ export async function getAllStaff(input: GetAllStaffInput) {
   const { search, page, pageSize } = input;
 
   const where: Prisma.UserWhereInput = {
-    role: { in: [Role.ADMIN, Role.MANAGER, Role.FRONT_DESK, Role.HOUSEKEEPING] },
+    role: {
+      in: [Role.ADMIN, Role.MANAGER, Role.FRONT_DESK, Role.HOUSEKEEPING],
+    },
     ...(search && {
       OR: [
         { email: { contains: search, mode: "insensitive" } },

@@ -33,7 +33,7 @@ import { STAFF_ROLES } from "~/server/validations/staff-validation";
 import type { Role } from "@prisma/client";
 import { formatRole } from "~/lib/format-role";
 
-type StaffMember = RouterOutputs["staff"]["getAll"][number];
+type StaffMember = RouterOutputs["staff"]["getAll"]["staff"][number];
 
 export function StaffEditDialog({
   staff,

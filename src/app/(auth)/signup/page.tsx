@@ -3,16 +3,11 @@ import { auth } from "~/server/auth";
 import { SignupForm } from "./_components/signup-form";
 
 
-export default async function SignupPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ callbackUrl?: string; error?: string }>;
-}) {
+export default async function SignupPage() {
   const session = await auth();
-  const { callbackUrl, error } = await searchParams;
 
   // Already signed in? Don't show a login form, just move on.
-  if (session) redirect(callbackUrl ?? "/");
+  if (session) redirect("/");
 
   return (
     <div className="bg-muted/40 flex min-h-screen items-center justify-center px-4">
@@ -25,7 +20,7 @@ export default async function SignupPage({
             Please enter your details to create an account.
           </p>
         </div>
-        <SignupForm callbackUrl={callbackUrl ?? "/"} error={error} />
+        <SignupForm />
       </div>
     </div>
   );
