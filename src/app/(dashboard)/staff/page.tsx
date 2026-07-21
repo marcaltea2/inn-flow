@@ -11,7 +11,6 @@ export default async function StaffPage() {
     redirect("/");
   }
 
-  const staff = await api.staff.getAll();
   const canManage = hasPermission(session.user.role, "staff", "manage");
 
   return (
@@ -25,7 +24,7 @@ export default async function StaffPage() {
         </div>
       </div>
 
-      <StaffTable initialData={staff} canManage={canManage} />
+      <StaffTable canManage={canManage} />
     </div>
   );
 }
