@@ -1,7 +1,18 @@
 import { createTRPCRouter } from "../trpc";
 import { permissionProcedure } from "../rbac";
-import { createAmenitySchema, updateAmenitySchema, getAllAmenitiesSchema, setAmenityActiveSchema } from "~/server/validations/amenity-validation";
-import { createAmenity, updateAmenity, getAllAmenities,getAmenityById, setAmenityActive } from "~/server/services/amenity-service";
+import {
+  createAmenitySchema,
+  updateAmenitySchema,
+  getAllAmenitiesSchema,
+  setAmenityActiveSchema,
+} from "~/server/validations/amenity-validation";
+import {
+  createAmenity,
+  updateAmenity,
+  getAllAmenities,
+  getAmenityById,
+  setAmenityActive,
+} from "~/server/services/amenity-service";
 import { z } from "zod";
 
 export const amenityRouter = createTRPCRouter({
@@ -23,5 +34,7 @@ export const amenityRouter = createTRPCRouter({
 
   setActive: permissionProcedure("staff", "manage")
     .input(setAmenityActiveSchema)
-    .mutation(({ input, ctx }) =>setAmenityActive(input.amenityId, input.isActive, ctx.session.user.id), ),
+    .mutation(({ input, ctx }) =>
+      setAmenityActive(input.amenityId, input.isActive, ctx.session.user.id),
+    ),
 });

@@ -71,3 +71,12 @@ enum HousekeepingTaskStatus {
   IN_PROGRESS
   DONE
 }
+
+enum AmenityCategory {
+  CONNECTIVITY
+  ROOM_FEATURES
+  BATHROOM
+  VIEW
+  ACCESSIBILITY
+  SERVICES
+}

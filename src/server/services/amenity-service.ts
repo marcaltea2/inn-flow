@@ -3,16 +3,22 @@ import { Prisma } from "@prisma/client";
 import type {
   CreateAmenityInput,
   UpdateAmenityInput,
-  GetAllAmenitiesInput
+  GetAllAmenitiesInput,
 } from "../validations/amenity-validation";
 import { TRPCError } from "@trpc/server";
 
 const amenitySelect = {
   id: true,
   name: true,
-  isActive: true,
+  icon: true,
+  category: true,
+  isGuestFacing: true,
+  deactivatedAt: true,
   createdAt: true,
   updatedAt: true,
+  _count: {
+    select: { roomTypes: true },
+  },
 } satisfies Prisma.AmenitySelect;
 
 export async function createAmenity(
@@ -23,7 +29,9 @@ export async function createAmenity(
     return await db.amenity.create({
       data: {
         name: data.name,
-        isActive: true,
+        icon: data.icon,
+        category: data.category,
+        isGuestFacing: data.isGuestFacing,
         createdById: createdByUserId,
       },
       select: amenitySelect,
@@ -48,13 +56,16 @@ export async function updateAmenity(
   data: UpdateAmenityInput,
   updatedByUserId: string,
 ) {
-  const { amenityId, name } = data;
+  const { amenityId, name, icon, category, isGuestFacing } = data;
 
   try {
     return await db.amenity.update({
       where: { id: amenityId },
       data: {
         name,
+        icon,
+        category,
+        isGuestFacing,
         updatedById: updatedByUserId,
       },
       select: amenitySelect,
@@ -73,12 +84,29 @@ export async function updateAmenity(
   }
 }
 
-
 export async function setAmenityActive(
   amenityId: string,
   isActive: boolean,
   actingUserId: string,
 ) {
+  if (!isActive) {
+    const amenity = await db.amenity.findUnique({
+      where: { id: amenityId },
+      select: { _count: { select: { roomTypes: true } } },
+    });
+
+    if (!amenity) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Amenity not found." });
+    }
+
+    if (amenity._count.roomTypes > 0) {
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: `Cannot deactivate — still assigned to ${amenity._count.roomTypes} room type(s). Unassign it first.`,
+      });
+    }
+  }
+
   return db.amenity.update({
     where: { id: amenityId },
     data: {
@@ -91,19 +119,21 @@ export async function setAmenityActive(
 }
 
 export async function getAllAmenities(input: GetAllAmenitiesInput) {
-  const { search, page, pageSize } = input;
+  const { search, category, isGuestFacing, page, pageSize } = input;
 
   const where: Prisma.AmenityWhereInput = {
     ...(search && {
       name: { contains: search, mode: "insensitive" },
     }),
+    ...(category && { category }),
+    ...(isGuestFacing !== undefined && { isGuestFacing }),
   };
 
   const [amenities, total] = await Promise.all([
     db.amenity.findMany({
       where,
       select: amenitySelect,
-      orderBy: { name: "asc" },
+      orderBy: [{ category: "asc" }, { name: "asc" }],
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),

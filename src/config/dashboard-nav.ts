@@ -7,15 +7,16 @@ import {
   Sparkles,
   UserCog,
   Settings,
+  ConciergeBell,
   type LucideIcon,
 } from "lucide-react";
-import { Role } from "@prisma/client"; 
+import { Role } from "@prisma/client";
 
 export type NavItem = {
   title: string;
   url: string;
   icon: LucideIcon;
-  roles?: Role[]; 
+  roles?: Role[];
 };
 
 export type NavGroup = {
@@ -26,11 +27,7 @@ export type NavGroup = {
 export const dashboardNav: NavGroup[] = [
   {
     label: "Overview",
-    items: [
-      { title: "Dashboard", url: "/", 
-        icon: LayoutDashboard 
-      },
-    ],
+    items: [{ title: "Dashboard", url: "/", icon: LayoutDashboard }],
   },
   {
     label: "Front Desk",
@@ -84,6 +81,12 @@ export const dashboardNav: NavGroup[] = [
         title: "Staff",
         url: "/staff",
         icon: UserCog,
+        roles: [Role.ADMIN],
+      },
+      {
+        title: "Amenities",
+        url: "/amenities",
+        icon: ConciergeBell,
         roles: [Role.ADMIN],
       },
       {

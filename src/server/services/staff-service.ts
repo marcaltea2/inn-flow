@@ -141,10 +141,10 @@ export async function updateStaff(
         ...(emailChanged && { emailVerified: null }), // FIX: was missing — mailbox unconfirmed until re-verified
         staff: {
           update: {
-            employeeId: data.employeeId ?? null,
+            employeeId: employeeId ?? null,
             firstName,
             lastName,
-            phone: data.phone ?? null,
+            phone: phone ?? null,
             updatedById: updatedByUserId,
           },
         },

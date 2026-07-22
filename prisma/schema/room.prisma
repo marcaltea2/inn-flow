@@ -34,12 +34,14 @@ model RoomType {
 }
 
 model Amenity {
-  id              String     @id @default(cuid())
-  name            String     @unique // e.g. "Free WiFi", "Mini Fridge", "Balcony"
-  isActive        Boolean    @default(true)
-  roomTypes       RoomType[] @relation("RoomTypeAmenities")
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  id              String          @id @default(cuid())
+  name            String          @unique // e.g. "Free WiFi", "Mini Fridge", "Balcony"
+  icon            String
+  category        AmenityCategory @default(SERVICES)
+  isGuestFacing   Boolean         @default(true)
+  roomTypes       RoomType[]      @relation("RoomTypeAmenities")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
   createdById     String? // nullable — see §4.3 audit-field convention
   updatedById     String?
   deactivatedAt   DateTime? // null = active; set when an admin deactivates this staff member (§9.5 Phase 1 Day 8)
