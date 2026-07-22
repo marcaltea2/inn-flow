@@ -3,7 +3,7 @@ import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider, { type GoogleProfile } from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
-import { Role } from "@prisma/client";
+import type { Role } from "@prisma/client";
 import "next-auth/jwt";
 import { db } from "~/server/db";
 
