@@ -42,8 +42,8 @@ export function DeactivateAmenityDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {isActive ? "Deactivate" : "Reactivate"} &&quot;{amenity.name}
-            &&quot;?
+            {isActive ? "Deactivate" : "Reactivate"} &quot;{amenity.name}
+            &quot;?
           </AlertDialogTitle>
           <AlertDialogDescription>
             {isActive ? (
@@ -66,7 +66,7 @@ export function DeactivateAmenityDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            disabled={mutation.isPending}
+            disabled={mutation.isPending || amenity._count.roomTypes > 0}
             onClick={() =>
               mutation.mutate({ amenityId: amenity.id, isActive: !isActive })
             }

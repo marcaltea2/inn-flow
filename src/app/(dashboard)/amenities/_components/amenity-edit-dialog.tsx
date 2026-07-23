@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { AMENITY_CATEGORIES } from "~/server/validations/amenity-validation";
+import { AmenityCategory } from "@prisma/client";
 import { formatCategory } from "~/lib/format-category";
 import { IconPicker } from "./icon-picker";
 
@@ -137,7 +137,7 @@ export function AmenityEditDialog({
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                {AMENITY_CATEGORIES.map((c) => (
+                {Object.values(AmenityCategory).map((c) => (
                   <SelectItem key={c} value={c}>
                     {formatCategory(c)}
                   </SelectItem>

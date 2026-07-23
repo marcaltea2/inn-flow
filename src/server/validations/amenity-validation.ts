@@ -1,15 +1,6 @@
 import { z } from "zod";
 import { AmenityCategory } from "@prisma/client";
 
-export const AMENITY_CATEGORIES = [
-  AmenityCategory.CONNECTIVITY,
-  AmenityCategory.ROOM_FEATURES,
-  AmenityCategory.BATHROOM,
-  AmenityCategory.VIEW,
-  AmenityCategory.ACCESSIBILITY,
-  AmenityCategory.SERVICES,
-] as const;
-
 export const createAmenitySchema = z.object({
   name: z
     .string()
@@ -19,7 +10,7 @@ export const createAmenitySchema = z.object({
     .string()
     .min(1, "Icon is required.")
     .max(50, "Icon name cannot exceed 50 characters."), // lucide-react icon name, e.g. "wifi"
-  category: z.enum(AMENITY_CATEGORIES, {
+  category: z.nativeEnum(AmenityCategory, {
     errorMap: () => ({ message: "Please select a valid category." }),
   }),
   isGuestFacing: z.boolean({
@@ -38,7 +29,7 @@ export const updateAmenitySchema = z.object({
     .string()
     .min(1, "Icon is required.")
     .max(50, "Icon name cannot exceed 50 characters."),
-  category: z.enum(AMENITY_CATEGORIES, {
+  category: z.nativeEnum(AmenityCategory, {
     errorMap: () => ({ message: "Please select a valid category." }),
   }),
   isGuestFacing: z.boolean({
