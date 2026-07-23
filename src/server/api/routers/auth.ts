@@ -22,20 +22,20 @@ export const authRouter = createTRPCRouter({
   completePasswordReset: publicProcedure
     .input(completeResetPasswordSchema)
     .mutation(({ input }) =>
-      completeResetPassword(input.token, input.newPassword),
+      completeResetPassword(input),
     ),
 
   changeOwnPassword: protectedProcedure
     .input(changeOwnPasswordSchema)
     .mutation(({ input, ctx }) =>
-      changeOwnPassword(ctx.session.user.id, input.newPassword),
+      changeOwnPassword(ctx.session.user.id, input),
     ),
 
   forgotPassword: publicProcedure
     .input(forgotPasswordSchema)
-    .mutation(({ input }) => forgotPassword(input.email)),
+    .mutation(({ input }) => forgotPassword(input)),
 
   checkEmailVerificationStatus: publicProcedure
     .input(checkEmailVerificationStatusSchema)
-    .query(({ input }) => checkEmailVerificationStatus(input.email)),
+    .query(({ input }) => checkEmailVerificationStatus(input)),
 });
