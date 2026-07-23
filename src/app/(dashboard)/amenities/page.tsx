@@ -19,7 +19,7 @@ const session = await auth();
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Amenities</h1>
           <p className="text-sm text-muted-foreground">
-            Manage amenities.
+            Manage the amenities available across your room types.
           </p>
         </div>
       </div>

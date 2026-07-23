@@ -33,18 +33,12 @@ import { AmenityCreateDialog } from "./amenity-create-dialog";
 import { AmenityEditDialog } from "./amenity-edit-dialog";
 import { DeactivateAmenityDialog } from "./deactivate-amenity-dialog";
 import { IconPreview } from "./icon-picker";
+import { formatCategory } from "~/lib/format-category";
 
 type Amenity = RouterOutputs["amenity"]["getAll"]["amenities"][number];
 
 const PAGE_SIZE = 10;
 
-function formatCategory(category: string) {
-  return category
-    .toLowerCase()
-    .split("_")
-    .map((w) => w[0]?.toUpperCase() + w.slice(1))
-    .join(" ");
-}
 
 export function AmenitiesTable({ canManage }: { canManage: boolean }) {
   const utils = api.useUtils();
