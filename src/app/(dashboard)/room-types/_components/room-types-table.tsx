@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import {
   MoreHorizontal,
@@ -7,8 +6,6 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  Eye,
-  EyeOff,
 } from "lucide-react";
 import { api, type RouterOutputs } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
@@ -29,18 +26,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { AmenityCreateDialog } from "./amenity-create-dialog";
-import { AmenityEditDialog } from "./amenity-edit-dialog";
-import { DeactivateAmenityDialog } from "./deactivate-amenity-dialog";
-import { IconPreview } from "./icon-picker";
-import { formatCategory } from "~/lib/format-category";
 
-type Amenity = RouterOutputs["amenity"]["getAll"]["amenities"][number];
+import { RoomTypeCreateDialog } from "./room-type-create-dialog";
+import { RoomTypeEditDialog } from "./room-type-edit-dialog";
+import { DeactivateRoomTypeDialog } from "./deactivate-room-type-dialog";
 
+type RoomType = RouterOutputs["roomType"]["getAll"]["roomTypes"][number];
 const PAGE_SIZE = 10;
 
-
-export function AmenitiesTable({ canManage }: { canManage: boolean }) {
+export function RoomTypesTable({ canManage }: { canManage: boolean }) {
   const utils = api.useUtils();
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
@@ -55,21 +49,21 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
     return () => clearTimeout(timeout);
   }, [searchInput]);
 
-  const { data, isLoading } = api.amenity.getAll.useQuery({
+  const { data, isLoading } = api.roomType.getAll.useQuery({
     search: search || undefined,
     page,
     pageSize: PAGE_SIZE,
   });
 
   const [createOpen, setCreateOpen] = useState(false);
-  const [editTarget, setEditTarget] = useState<Amenity | null>(null);
-  const [deactivateTarget, setDeactivateTarget] = useState<Amenity | null>(
+  const [editTarget, setEditTarget] = useState<RoomType | null>(null);
+  const [deactivateTarget, setDeactivateTarget] = useState<RoomType | null>(
     null,
   );
 
-  const invalidate = () => utils.amenity.getAll.invalidate();
+  const invalidate = () => utils.roomType.getAll.invalidate();
 
-  const amenities = data?.amenities ?? [];
+  const roomTypes = data?.roomTypes ?? [];
   const totalPages = data?.totalPages ?? 1;
   const colSpan = canManage ? 7 : 6;
 
@@ -97,10 +91,9 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Icon</TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Guest-Facing</TableHead>
+              <TableHead>Rate</TableHead>
+              <TableHead>Capacity</TableHead>
               <TableHead>Used By</TableHead>
               <TableHead>Status</TableHead>
               {canManage && <TableHead className="w-10" />}
@@ -117,7 +110,7 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && amenities.length === 0 && (
+            {!isLoading && roomTypes.length === 0 && (
               <TableRow>
                 <TableCell
                   colSpan={colSpan}
@@ -129,29 +122,21 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
                 </TableCell>
               </TableRow>
             )}
-            {amenities.map((amenity) => {
-              const isActive = !amenity.deactivatedAt;
+            {roomTypes.map((roomType) => {
+              const isActive = !roomType.deactivatedAt;
+
               return (
-                <TableRow key={amenity.id}>
-                  <TableCell>
-                    <IconPreview name={amenity.icon} className="size-4" />
+                <TableRow key={roomType.id}>
+                  <TableCell className="font-medium">{roomType.name}</TableCell>
+                  <TableCell className="font-medium">
+                    {Number(roomType.baseRate)}
                   </TableCell>
-                  <TableCell className="font-medium">{amenity.name}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">
-                      {formatCategory(amenity.category)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {amenity.isGuestFacing ? (
-                      <Eye className="text-muted-foreground size-4" />
-                    ) : (
-                      <EyeOff className="text-muted-foreground size-4" />
-                    )}
+                  <TableCell className="font-medium">
+                    {roomType.capacity}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {amenity._count.roomTypes} room type
-                    {amenity._count.roomTypes === 1 ? "" : "s"}
+                    {roomType._count.rooms} room type
+                    {roomType._count.rooms === 1 ? "" : "s"}
                   </TableCell>
                   <TableCell>
                     <Badge variant={isActive ? "secondary" : "outline"}>
@@ -170,14 +155,14 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
                         />
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
-                            onClick={() => setEditTarget(amenity)}
+                            onClick={() => setEditTarget(roomType)}
                           >
                             Edit details
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             className={isActive ? "text-destructive" : ""}
-                            onClick={() => setDeactivateTarget(amenity)}
+                            onClick={() => setDeactivateTarget(roomType)}
                           >
                             {isActive ? "Deactivate" : "Reactivate"}
                           </DropdownMenuItem>
@@ -218,15 +203,15 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
         </div>
       )}
 
-      <AmenityCreateDialog
+      <RoomTypeCreateDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         onSuccess={invalidate}
       />
 
       {editTarget && (
-        <AmenityEditDialog
-          amenity={editTarget}
+        <RoomTypeEditDialog
+          roomType={editTarget}
           open={!!editTarget}
           onOpenChange={(open) => !open && setEditTarget(null)}
           onSuccess={invalidate}
@@ -234,8 +219,8 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
       )}
 
       {deactivateTarget && (
-        <DeactivateAmenityDialog
-          amenity={deactivateTarget}
+        <DeactivateRoomTypeDialog
+          roomType={deactivateTarget}
           open={!!deactivateTarget}
           onOpenChange={(open) => !open && setDeactivateTarget(null)}
           onSuccess={invalidate}

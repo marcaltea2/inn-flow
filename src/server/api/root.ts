@@ -3,7 +3,8 @@ import { roomRouter } from "./routers/rooms";
 import { staffRouter } from "./routers/staffs";
 import { authRouter } from "./routers/auth";
 import { guestRouter } from "./routers/guest";
-import { amenityRouter } from "./routers/amenity"
+import { amenityRouter } from "./routers/amenity";
+import { roomTypeRouter } from "./routers/room-type";
 
 /**
  * This is the primary router for your server.
@@ -11,11 +12,12 @@ import { amenityRouter } from "./routers/amenity"
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
- auth: authRouter,
- room: roomRouter,
- staff: staffRouter,
- guest: guestRouter,
- amenity: amenityRouter,
+  auth: authRouter,
+  room: roomRouter,
+  staff: staffRouter,
+  guest: guestRouter,
+  amenity: amenityRouter,
+  roomType: roomTypeRouter,
 });
 
 // export type definition of API

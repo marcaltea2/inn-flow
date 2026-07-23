@@ -28,7 +28,11 @@ export function DeactivateStaffDialog({
 }) {
   const mutation = api.staff.setActive.useMutation({
     onSuccess: () => {
-      toast.success(staff.isActive ? "Staff account deactivated" : "Staff account reactivated");
+      toast.success(
+        staff.isActive
+          ? "Staff account deactivated"
+          : "Staff account reactivated",
+      );
       onOpenChange(false);
       onSuccess();
     },
@@ -40,8 +44,8 @@ export function DeactivateStaffDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {staff.isActive ? "Deactivate" : "Reactivate"} {staff.staff?.firstName}{" "}
-            {staff.staff?.lastName}?
+            {staff.isActive ? "Deactivate" : "Reactivate"}{" "}
+            {staff.staff?.firstName} {staff.staff?.lastName}?
           </AlertDialogTitle>
           <AlertDialogDescription>
             {staff.isActive
@@ -52,11 +56,18 @@ export function DeactivateStaffDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
+            disabled={mutation.isPending}
             onClick={() =>
               mutation.mutate({ userId: staff.id, isActive: !staff.isActive })
             }
           >
-            {staff.isActive ? "Deactivate" : "Reactivate"}
+            {mutation.isPending
+              ? staff.isActive
+                ? "Deactivating…"
+                : "Reactivating…"
+              : staff.isActive
+                ? "Deactivate"
+                : "Reactivate"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -8,6 +8,7 @@ import {
   UserCog,
   Settings,
   ConciergeBell,
+  Layers,
   type LucideIcon,
 } from "lucide-react";
 import { Role } from "@prisma/client";
@@ -87,7 +88,13 @@ export const dashboardNav: NavGroup[] = [
         title: "Amenities",
         url: "/amenities",
         icon: ConciergeBell,
-        roles: [Role.ADMIN],
+        roles: [Role.ADMIN, Role.MANAGER],
+      },
+      {
+        title: "Room Types",
+        url: "/room-types",
+        icon: Layers,
+        roles: [Role.ADMIN,  Role.MANAGER],
       },
       {
         title: "Settings",
