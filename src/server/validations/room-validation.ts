@@ -10,7 +10,7 @@ export const createRoomSchema = z.object({
     .number({ invalid_type_error: "Floor must be a number." })
     .int("Floor must be a whole number.")
     .optional(),
-  roomTypeId: z.string().cuid("Invalid room type ID."),
+  roomTypeId: z.string().cuid("Invalid room type."),
 });
 
 export const updateRoomSchema = z.object({
@@ -32,6 +32,34 @@ export const setRoomStatusSchema = z.object({
     invalid_type_error: "Please select a valid room status.",
   }),
 });
+
+export const setRoomActiveSchema = z.object({
+  roomId: z.string().cuid("Invalid room ID."),
+  isActive: z.boolean({
+    required_error: "isActive is required.",
+    invalid_type_error: "isActive must be true or false.",
+  }),
+});
+
+
+export const getAllRoomsSchema = z
+  .object({
+    search: z.string().trim().optional(),
+    page: z.coerce
+      .number({ invalid_type_error: "Page must be a number." })
+      .int("Page must be a whole number.")
+      .min(1, "Page must be at least 1.")
+      .default(1),
+    pageSize: z.coerce
+      .number({ invalid_type_error: "Page size must be a number." })
+      .int("Page size must be a whole number.")
+      .min(1, "Page size must be at least 1.")
+      .max(100, "Page size cannot exceed 100.")
+      .default(10),
+  })
+  .optional()
+  .default({});
+
 
 export type CreateRoomInput = z.infer<typeof createRoomSchema>;
 export type UpdateRoomInput = z.infer<typeof updateRoomSchema>;
