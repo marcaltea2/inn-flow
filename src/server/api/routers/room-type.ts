@@ -16,23 +16,23 @@ import {
 import { z } from "zod";
 
 export const roomTypeRouter = createTRPCRouter({
-  getAll: permissionProcedure("staff", "view")
+  getAll: permissionProcedure("roomType", "manage")
     .input(getAllRoomTypesSchema)
     .query(({ input }) => getAllRoomTypes(input)),
 
-  getById: permissionProcedure("staff", "view")
+  getById: permissionProcedure("roomType", "manage")
     .input(z.object({ amenityId: z.string().cuid() }))
     .query(({ input }) => getRoomTypeById(input.amenityId)),
 
-  create: permissionProcedure("staff", "manage")
+  create: permissionProcedure("roomType", "manage")
     .input(createRoomTypeSchema)
     .mutation(({ input, ctx }) => createRoomType(input, ctx.session.user.id)),
 
-  update: permissionProcedure("staff", "manage")
+  update: permissionProcedure("roomType", "manage")
     .input(updateRoomTypeSchema)
     .mutation(({ input, ctx }) => updateRoomType(input, ctx.session.user.id)),
 
-  setActive: permissionProcedure("staff", "manage")
+  setActive: permissionProcedure("roomType", "manage")
     .input(setRoomTypeActiveSchema)
     .mutation(({ input, ctx }) => setRoomTypeActive(input.roomTypeId, input.isActive, ctx.session.user.id),
     ),

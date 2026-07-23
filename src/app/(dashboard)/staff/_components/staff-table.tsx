@@ -25,7 +25,7 @@ import { StaffCreateDialog } from "./staff-create-dialog";
 import { StaffEditDialog } from "./staff-edit-dialog";
 import { ResetPasswordDialog } from "./reset-password-dialog";
 import { DeactivateStaffDialog } from "./deactivate-staff-dialog";
-import { formatRole } from "~/lib/format-role";
+import { formatString } from "~/lib/format-string";
 
 type StaffMember = RouterOutputs["staff"]["getAll"]["staff"][number];
 
@@ -77,7 +77,7 @@ export function StaffTable({ canManage }: { canManage: boolean }) {
         <div className="relative max-w-sm flex-1">
           <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
           <Input
-            placeholder="Search by name, email, or ID…"
+            placeholder="Search…"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="pl-8"
@@ -125,7 +125,7 @@ export function StaffTable({ canManage }: { canManage: boolean }) {
                 <TableCell className="text-muted-foreground">{member.email}</TableCell>
                 <TableCell>
                   <Badge variant={roleBadgeVariant[member.role]}>
-                    {formatRole(member.role)}
+                    {formatString(member.role)}
                   </Badge>
                 </TableCell>
                 <TableCell>

@@ -74,9 +74,9 @@ export async function updateRoomType(
         name,
         baseRate,
         capacity,
-        description,
+        description: description ?? null,
         amenities: {
-          connect: (data.amenityIds ?? []).map((id) => ({ id })),
+          set: (amenityIds ?? []).map((id) => ({ id })),
         },
         updatedById: updatedByUserId,
       },
@@ -132,6 +132,7 @@ export async function setRoomTypeActive(
     select: roomTypeSelect,
   });
 }
+
 export async function getAllRoomTypes(input: GetAllRoomTypesInput) {
   const { search, page, pageSize } = input;
 

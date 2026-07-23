@@ -89,9 +89,9 @@ export function RoomTypeEditDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add room type</DialogTitle>
+          <DialogTitle>Edit room type</DialogTitle>
           <DialogDescription>
-            Create a new room type that can be assigned to rooms.
+            Update this room type&apos;s details.
           </DialogDescription>
         </DialogHeader>
 

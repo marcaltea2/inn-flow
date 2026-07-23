@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { STAFF_ROLES } from "~/server/validations/staff-validation";
-import { formatRole } from "~/lib/format-role";
+import { formatString } from "~/lib/format-string";
 import { Role } from "@prisma/client";
 
 export function StaffCreateDialog({
@@ -148,19 +148,19 @@ export function StaffCreateDialog({
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="role">Role</Label>
               <Select
-                value={formatRole(form.watch("role"))}
+                value={formatString(form.watch("role"))}
                 onValueChange={(v) =>
                   form.setValue("role", v as CreateStaffInput["role"])
                 }
               >
                 <SelectTrigger>
-                  <SelectValue>{formatRole(form.watch("role"))}</SelectValue>
+                  <SelectValue>{formatString(form.watch("role"))}</SelectValue>
                 </SelectTrigger>
 
                 <SelectContent>
                   {STAFF_ROLES.map((role) => (
                     <SelectItem key={role} value={role}>
-                      {formatRole(role)}
+                      {formatString(role)}
                     </SelectItem>
                   ))}
                 </SelectContent>

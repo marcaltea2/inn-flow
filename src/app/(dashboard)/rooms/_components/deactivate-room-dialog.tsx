@@ -12,25 +12,26 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
+type Room = RouterOutputs["room"]["getAll"]["rooms"][number];
 
-type Amenity = RouterOutputs["amenity"]["getAll"]["amenities"][number];
-
-export function DeactivateAmenityDialog({
-  amenity,
+export function DeactivateRoomDialog({
+  room,
   open,
   onOpenChange,
   onSuccess,
 }: {
-  amenity: Amenity;
+  room: Room;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
 }) {
-  const isActive = !amenity.deactivatedAt;
+  const isActive = !room.deactivatedAt;
 
-  const mutation = api.amenity.setActive.useMutation({
+  const mutation = api.room.setActive.useMutation({
     onSuccess: () => {
-      toast.success(isActive ? "Amenity deactivated" : "Amenity reactivated");
+      toast.success(
+        isActive ? "Room deactivated" : "Room reactivated",
+      );
       onOpenChange(false);
       onSuccess();
     },
@@ -42,7 +43,7 @@ export function DeactivateAmenityDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {isActive ? "Deactivate" : "Reactivate"} &quot;{amenity.name}
+            {isActive ? "Deactivate" : "Reactivate"} &quot;{room.number}
             &quot;?
           </AlertDialogTitle>
           <AlertDialogDescription>
@@ -50,11 +51,11 @@ export function DeactivateAmenityDialog({
               <>
                 It will no longer be selectable when assigning amenities to room
                 types. Existing room types keep their history.
-                {amenity._count.roomTypes > 0 && (
+                {room._count.reservations > 0 && (
                   <span className="text-destructive mt-2 block font-medium">
-                    Currently assigned to {amenity._count.roomTypes} room type
-                    {amenity._count.roomTypes === 1 ? "" : "s"} — you&apos;ll
-                    need to unassign it there first.
+                    Currently assigned to {room._count.reservations} reservation
+                    {room._count.reservations === 1 ? "" : "s"} — you&apos;ll need
+                    to unassign it there first.
                   </span>
                 )}
               </>
@@ -66,9 +67,9 @@ export function DeactivateAmenityDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            disabled={mutation.isPending || amenity._count.roomTypes > 0}
+            disabled={mutation.isPending || room._count.reservations > 0}
             onClick={() =>
-              mutation.mutate({ amenityId: amenity.id, isActive: !isActive })
+              mutation.mutate({ roomId: room.id, isActive: !isActive })
             }
           >
             {mutation.isPending

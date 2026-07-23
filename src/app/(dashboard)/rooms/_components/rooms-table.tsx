@@ -7,8 +7,6 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  Eye,
-  EyeOff,
 } from "lucide-react";
 import { api, type RouterOutputs } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
@@ -29,24 +27,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { AmenityCreateDialog } from "./amenity-create-dialog";
-import { AmenityEditDialog } from "./amenity-edit-dialog";
-import { DeactivateAmenityDialog } from "./deactivate-amenity-dialog";
-import { IconPreview } from "./icon-picker";
+
+import { RoomCreateDialog } from "./room-create-dialog";
+import { RoomEditDialog } from "./room-edit-dialog";
+import { DeactivateRoomDialog } from "./deactivate-room-dialog";
 import { formatString } from "~/lib/format-string";
 
-type Amenity = RouterOutputs["amenity"]["getAll"]["amenities"][number];
-
+type Room = RouterOutputs["room"]["getAll"]["rooms"][number];
 const PAGE_SIZE = 10;
 
-
-export function AmenitiesTable({ canManage }: { canManage: boolean }) {
+export function RoomsTable({ canManage }: { canManage: boolean }) {
   const utils = api.useUtils();
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  // Debounce: only update the actual query param 350ms after typing stops
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSearch(searchInput);
@@ -55,21 +50,19 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
     return () => clearTimeout(timeout);
   }, [searchInput]);
 
-  const { data, isLoading } = api.amenity.getAll.useQuery({
+  const { data, isLoading } = api.room.getAll.useQuery({
     search: search || undefined,
     page,
     pageSize: PAGE_SIZE,
   });
 
   const [createOpen, setCreateOpen] = useState(false);
-  const [editTarget, setEditTarget] = useState<Amenity | null>(null);
-  const [deactivateTarget, setDeactivateTarget] = useState<Amenity | null>(
-    null,
-  );
+  const [editTarget, setEditTarget] = useState<Room | null>(null);
+  const [deactivateTarget, setDeactivateTarget] = useState<Room | null>(null);
 
-  const invalidate = () => utils.amenity.getAll.invalidate();
+  const invalidate = () => utils.room.getAll.invalidate();
 
-  const amenities = data?.amenities ?? [];
+  const rooms = data?.rooms ?? [];
   const totalPages = data?.totalPages ?? 1;
   const colSpan = canManage ? 7 : 6;
 
@@ -88,7 +81,7 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
         {canManage && (
           <Button onClick={() => setCreateOpen(true)}>
             <Plus className="h-4 w-4" />
-            Add amenity
+            Add room
           </Button>
         )}
       </div>
@@ -97,10 +90,10 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Icon</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Guest-Facing</TableHead>
+              <TableHead>Number</TableHead>
+              <TableHead>Floor</TableHead>
+              <TableHead>Room Type</TableHead>
+              <TableHead>Room Status</TableHead>
               <TableHead>Used By</TableHead>
               <TableHead>Status</TableHead>
               {canManage && <TableHead className="w-10" />}
@@ -117,41 +110,32 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && amenities.length === 0 && (
+            {!isLoading && rooms.length === 0 && (
               <TableRow>
                 <TableCell
                   colSpan={colSpan}
                   className="text-muted-foreground h-24 text-center"
                 >
-                  {search
-                    ? "No amenities match your search."
-                    : "No amenities yet."}
+                  {search ? "No room match your search." : "No room yet."}
                 </TableCell>
               </TableRow>
             )}
-            {amenities.map((amenity) => {
-              const isActive = !amenity.deactivatedAt;
+            {rooms.map((room) => {
+              const isActive = !room.deactivatedAt;
+
               return (
-                <TableRow key={amenity.id}>
-                  <TableCell>
-                    <IconPreview name={amenity.icon} className="size-4" />
+                <TableRow key={room.id}>
+                  <TableCell className="font-medium">{room.number}</TableCell>
+                  <TableCell className="font-medium">{Number(room.floor)}</TableCell>
+                  <TableCell className="font-medium">
+                    {room.roomType.name}
                   </TableCell>
-                  <TableCell className="font-medium">{amenity.name}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">
-                      {formatString(amenity.category)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {amenity.isGuestFacing ? (
-                      <Eye className="text-muted-foreground size-4" />
-                    ) : (
-                      <EyeOff className="text-muted-foreground size-4" />
-                    )}
+                  <TableCell className="font-medium">
+                    {formatString(room.status)}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {amenity._count.roomTypes} room type
-                    {amenity._count.roomTypes === 1 ? "" : "s"}
+                    {room._count.reservations} reservation
+                    {room._count.reservations === 1 ? "" : "s"}
                   </TableCell>
                   <TableCell>
                     <Badge variant={isActive ? "secondary" : "outline"}>
@@ -169,15 +153,13 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
                           }
                         />
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => setEditTarget(amenity)}
-                          >
+                          <DropdownMenuItem onClick={() => setEditTarget(room)}>
                             Edit details
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             className={isActive ? "text-destructive" : ""}
-                            onClick={() => setDeactivateTarget(amenity)}
+                            onClick={() => setDeactivateTarget(room)}
                           >
                             {isActive ? "Deactivate" : "Reactivate"}
                           </DropdownMenuItem>
@@ -218,15 +200,15 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
         </div>
       )}
 
-      <AmenityCreateDialog
+      <RoomCreateDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         onSuccess={invalidate}
       />
 
       {editTarget && (
-        <AmenityEditDialog
-          amenity={editTarget}
+        <RoomEditDialog
+          room={editTarget}
           open={!!editTarget}
           onOpenChange={(open) => !open && setEditTarget(null)}
           onSuccess={invalidate}
@@ -234,8 +216,8 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
       )}
 
       {deactivateTarget && (
-        <DeactivateAmenityDialog
-          amenity={deactivateTarget}
+        <DeactivateRoomDialog
+          room={deactivateTarget}
           open={!!deactivateTarget}
           onOpenChange={(open) => !open && setDeactivateTarget(null)}
           onSuccess={invalidate}

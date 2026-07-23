@@ -73,7 +73,7 @@ export function RoomTypesTable({ canManage }: { canManage: boolean }) {
         <div className="relative max-w-sm flex-1">
           <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
           <Input
-            placeholder="Search by name…"
+            placeholder="Search…"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="pl-8"
@@ -135,7 +135,7 @@ export function RoomTypesTable({ canManage }: { canManage: boolean }) {
                     {roomType.capacity}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {roomType._count.rooms} room type
+                    {roomType._count.rooms} room 
                     {roomType._count.rooms === 1 ? "" : "s"}
                   </TableCell>
                   <TableCell>
