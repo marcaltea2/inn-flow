@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { formatCategory } from "~/lib/format-category";
+import { formatString } from "~/lib/format-string";
 import { AmenityCategory } from "@prisma/client";
 import { IconPicker } from "./icon-picker";
 
@@ -115,20 +115,20 @@ export function AmenityCreateDialog({
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="category">Category</Label>
             <Select
-              value={formatCategory(form.watch("category"))}
+              value={formatString(form.watch("category"))}
               onValueChange={(v) =>
                 form.setValue("category", v as CreateAmenityInput["category"])
               }
             >
               <SelectTrigger id="category">
                 <SelectValue>
-                  {formatCategory(form.watch("category"))}
+                  {formatString(form.watch("category"))}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {Object.values(AmenityCategory).map((c) => (
                   <SelectItem key={c} value={c}>
-                    {formatCategory(c)}
+                    {formatString(c)}
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -1,4 +1,4 @@
-export function formatCategory(category?: string) {
+export function formatString(category?: string) {
   if (!category) return "";
 
   return category

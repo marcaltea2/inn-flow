@@ -33,7 +33,7 @@ import { AmenityCreateDialog } from "./amenity-create-dialog";
 import { AmenityEditDialog } from "./amenity-edit-dialog";
 import { DeactivateAmenityDialog } from "./deactivate-amenity-dialog";
 import { IconPreview } from "./icon-picker";
-import { formatCategory } from "~/lib/format-category";
+import { formatString } from "~/lib/format-string";
 
 type Amenity = RouterOutputs["amenity"]["getAll"]["amenities"][number];
 
@@ -139,7 +139,7 @@ export function AmenitiesTable({ canManage }: { canManage: boolean }) {
                   <TableCell className="font-medium">{amenity.name}</TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      {formatCategory(amenity.category)}
+                      {formatString(amenity.category)}
                     </Badge>
                   </TableCell>
                   <TableCell>

@@ -54,7 +54,7 @@ export function DeactivateRoomTypeDialog({
                 types. Existing room types keep their history.
                 {roomType._count.rooms > 0 && (
                   <span className="text-destructive mt-2 block font-medium">
-                    Currently assigned to {roomType._count.rooms} room type
+                    Currently assigned to {roomType._count.rooms} room 
                     {roomType._count.rooms === 1 ? "" : "s"} — you&apos;ll need
                     to unassign it there first.
                   </span>
@@ -68,7 +68,7 @@ export function DeactivateRoomTypeDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            disabled={mutation.isPending}
+            disabled={mutation.isPending || roomType._count.rooms > 0}
             onClick={() =>
               mutation.mutate({ roomTypeId: roomType.id, isActive: !isActive })
             }

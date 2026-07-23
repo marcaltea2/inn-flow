@@ -135,7 +135,7 @@ export function RoomTypesTable({ canManage }: { canManage: boolean }) {
                     {roomType.capacity}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {roomType._count.rooms} room type
+                    {roomType._count.rooms} room 
                     {roomType._count.rooms === 1 ? "" : "s"}
                   </TableCell>
                   <TableCell>

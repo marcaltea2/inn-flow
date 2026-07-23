@@ -31,7 +31,7 @@ import {
 } from "~/components/ui/select";
 import { STAFF_ROLES } from "~/server/validations/staff-validation";
 import type { Role } from "@prisma/client";
-import { formatRole } from "~/lib/format-role";
+import { formatString } from "~/lib/format-string";
 
 type StaffMember = RouterOutputs["staff"]["getAll"]["staff"][number];
 
@@ -185,18 +185,18 @@ export function StaffEditDialog({
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="role">Role</Label>
               <Select
-                value={formatRole(form.watch("role"))}
+                value={formatString(form.watch("role"))}
                 onValueChange={(v) =>
                   form.setValue("role", v as UpdateStaffInput["role"])
                 }
               >
                 <SelectTrigger id="role">
-                  <SelectValue>{formatRole(form.watch("role"))}</SelectValue>
+                  <SelectValue>{formatString(form.watch("role"))}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {STAFF_ROLES.map((role) => (
                     <SelectItem key={role} value={role}>
-                      {formatRole(role)}
+                      {formatString(role)}
                     </SelectItem>
                   ))}
                 </SelectContent>
