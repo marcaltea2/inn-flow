@@ -16,23 +16,23 @@ import {
 import { z } from "zod";
 
 export const amenityRouter = createTRPCRouter({
-  getAll: permissionProcedure("staff", "view")
+  getAll: permissionProcedure("amenity", "manage")
     .input(getAllAmenitiesSchema)
     .query(({ input }) => getAllAmenities(input)),
 
-  getById: permissionProcedure("staff", "view")
+  getById: permissionProcedure("amenity", "manage")
     .input(z.object({ amenityId: z.string().cuid() }))
     .query(({ input }) => getAmenityById(input.amenityId)),
 
-  create: permissionProcedure("staff", "manage")
+  create: permissionProcedure("amenity", "manage")
     .input(createAmenitySchema)
     .mutation(({ input, ctx }) => createAmenity(input, ctx.session.user.id)),
 
-  update: permissionProcedure("staff", "manage")
+  update: permissionProcedure("amenity", "manage")
     .input(updateAmenitySchema)
     .mutation(({ input, ctx }) => updateAmenity(input, ctx.session.user.id)),
 
-  setActive: permissionProcedure("staff", "manage")
+  setActive: permissionProcedure("amenity", "manage")
     .input(setAmenityActiveSchema)
     .mutation(({ input, ctx }) =>
       setAmenityActive(input.amenityId, input.isActive, ctx.session.user.id),

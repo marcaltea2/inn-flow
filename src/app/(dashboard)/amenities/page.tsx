@@ -7,11 +7,11 @@ import { AmenitiesTable } from "./_components/amenities-table";
 export default async function AmenitiesPage() {
 const session = await auth();
 
-  if (!session?.user || !hasPermission(session.user.role, "staff", "view")) {
+  if (!session?.user || !hasPermission(session.user.role, "amenity", "manage")) {
     redirect("/");
   }
 
-  const canManage = hasPermission(session.user.role, "staff", "manage");
+  const canManage = hasPermission(session.user.role, "amenity", "manage");
 
   return (
     <div className="flex flex-col gap-6 p-6">

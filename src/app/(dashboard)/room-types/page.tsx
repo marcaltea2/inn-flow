@@ -6,11 +6,11 @@ import { RoomTypesTable } from "./_components/room-types-table";
 export default async function RoomTypesPage() {
   const session = await auth();
 
-  if (!session?.user || !hasPermission(session.user.role, "staff", "view")) {
+  if (!session?.user || !hasPermission(session.user.role, "roomType", "manage")) {
     redirect("/");
   }
 
-  const canManage = hasPermission(session.user.role, "staff", "manage");
+  const canManage = hasPermission(session.user.role, "roomType", "manage");
 
   return (
     <div className="flex flex-col gap-6 p-6">
