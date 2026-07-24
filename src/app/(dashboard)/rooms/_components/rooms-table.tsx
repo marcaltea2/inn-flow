@@ -32,6 +32,7 @@ import { RoomCreateDialog } from "./room-create-dialog";
 import { RoomEditDialog } from "./room-edit-dialog";
 import { DeactivateRoomDialog } from "./deactivate-room-dialog";
 import { formatString } from "~/lib/format-string";
+import { RoomStatusSelect } from "./room-status-select";
 
 type Room = RouterOutputs["room"]["getAll"]["rooms"][number];
 const PAGE_SIZE = 10;
@@ -126,12 +127,18 @@ export function RoomsTable({ canManage }: { canManage: boolean }) {
               return (
                 <TableRow key={room.id}>
                   <TableCell className="font-medium">{room.number}</TableCell>
-                  <TableCell className="font-medium">{Number(room.floor)}</TableCell>
+                  <TableCell className="font-medium">
+                    {Number(room.floor)}
+                  </TableCell>
                   <TableCell className="font-medium">
                     {room.roomType.name}
                   </TableCell>
                   <TableCell className="font-medium">
-                    {formatString(room.status)}
+                    {canManage ? (
+                      <RoomStatusSelect room={room} />
+                    ) : (
+                      formatString(room.status)
+                    )}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {room._count.reservations} reservation
