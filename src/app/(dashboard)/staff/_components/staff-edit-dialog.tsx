@@ -109,7 +109,7 @@ export function StaffEditDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="firstName">First name</Label>
-              <Input id="firstName" {...form.register("firstName")} />
+              <Input id="firstName" placeholder="Enter first name"{...form.register("firstName")} />
 
               {form.formState.errors.firstName && (
                 <p className="text-destructive text-sm">
@@ -120,7 +120,7 @@ export function StaffEditDialog({
 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="lastName">Last name</Label>
-              <Input id="lastName" {...form.register("lastName")} />
+              <Input id="lastName" placeholder="Enter last name" {...form.register("lastName")} />
 
               {form.formState.errors.lastName && (
                 <p className="text-destructive text-sm">
@@ -152,6 +152,7 @@ export function StaffEditDialog({
             <Input
               id="email"
               type="email"
+              placeholder="Enter email"
               disabled={!emailUnlocked}
               {...form.register("email")}
             />
@@ -204,7 +205,7 @@ export function StaffEditDialog({
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="employeeId">Employee ID</Label>
-              <Input id="employeeId" {...form.register("employeeId")} />
+              <Input id="employeeId" placeholder="Enter employee ID" {...form.register("employeeId")} />
 
               {form.formState.errors.employeeId && (
                 <p className="text-destructive text-sm">
@@ -216,7 +217,7 @@ export function StaffEditDialog({
 
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" {...form.register("phone")} />
+            <Input id="phone" placeholder="Enter phone number" {...form.register("phone")} />
 
             {form.formState.errors.phone && (
               <p className="text-destructive text-sm">

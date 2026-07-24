@@ -86,6 +86,7 @@ export function StaffCreateDialog({
               <Label htmlFor="firstName">First name</Label>
               <Input
                 id="firstName"
+                placeholder="Enter first name"
                 {...form.register("firstName")}
                 autoComplete="off"
               />
@@ -100,6 +101,7 @@ export function StaffCreateDialog({
               <Label htmlFor="lastName">Last name</Label>
               <Input
                 id="lastName"
+                placeholder="Enter last name"
                 {...form.register("lastName")}
                 autoComplete="off"
               />
@@ -117,6 +119,7 @@ export function StaffCreateDialog({
             <Input
               id="email"
               type="email"
+              placeholder="Enter email"
               {...form.register("email")}
               autoComplete="off"
             />
@@ -133,6 +136,7 @@ export function StaffCreateDialog({
             <Input
               id="password"
               type="password"
+              placeholder="Enter temporary password"
               {...form.register("password")}
               autoComplete="new-password"
             />
@@ -168,7 +172,7 @@ export function StaffCreateDialog({
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="employeeId">Employee ID</Label>
-              <Input id="employeeId" {...form.register("employeeId")} />
+              <Input id="employeeId" placeholder="Enter employee ID"{...form.register("employeeId")} />
 
               {form.formState.errors.employeeId && (
                 <p className="text-destructive text-sm">
@@ -180,7 +184,7 @@ export function StaffCreateDialog({
 
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" {...form.register("phone")} autoComplete="off" />
+            <Input id="phone" placeholder="Enter phone number" {...form.register("phone")} autoComplete="off" />
 
             {form.formState.errors.phone && (
               <p className="text-destructive text-sm">

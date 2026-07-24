@@ -6,7 +6,7 @@ import type {
   SetRoomStatusInput,
 } from "../validations/room-validation";
 import { TRPCError } from "@trpc/server";
-import type { GetAllRoomTypesInput } from "../validations/room-type-validation";
+import type { GetAllRoomInput } from "../validations/room-validation";
 import { ReservationStatus } from "@prisma/client";
 
 const roomSelect = {
@@ -129,7 +129,7 @@ export async function setRoomActive(
     if (room._count.reservations > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Cannot deactivate — still assigned to ${room._count.reservations} room(s). Reassign them first.`,
+        message: `Cannot deactivate — still assigned to ${room._count.reservations} reservation(s). Reassign them first.`,
       });
     }
   }
@@ -145,7 +145,7 @@ export async function setRoomActive(
   });
 }
 
-export async function getAllRooms(input: GetAllRoomTypesInput) {
+export async function getAllRooms(input: GetAllRoomInput) {
   const { search, page, pageSize } = input;
 
   const where: Prisma.RoomWhereInput = {

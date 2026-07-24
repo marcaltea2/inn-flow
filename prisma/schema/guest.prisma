@@ -4,7 +4,7 @@ model Guest {
   user           User?         @relation(fields: [userId], references: [id])
   firstName      String
   lastName       String
-  email          String?      
+  email          String?
   phone          String?
   dateOfBirth    DateTime? // commonly required on a guest registration card; also relevant for age-restricted bookings
   nationality    String? // many jurisdictions legally require this on file for hotel guests
@@ -18,4 +18,6 @@ model Guest {
   updatedAt      DateTime      @updatedAt
   createdById    String? // staff who entered this guest (e.g. a walk-in); null if the guest self-registered
   updatedById    String?
+  deactivatedAt   DateTime? // null = active; set when an admin deactivates this staff member (§9.5 Phase 1 Day 8)
+  deactivatedById String?
 }

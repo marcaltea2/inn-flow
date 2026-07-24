@@ -63,6 +63,7 @@ export function ResetPasswordDialog({
             <Label htmlFor="newPassword">New password</Label>
             <Input
               id="newPassword"
+              placeholder="Enter new password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

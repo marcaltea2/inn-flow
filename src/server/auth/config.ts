@@ -3,7 +3,7 @@ import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider, { type GoogleProfile } from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
-import type { Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import "next-auth/jwt";
 import { db } from "~/server/db";
 
@@ -67,7 +67,6 @@ export const authConfig = {
 
         if (!user?.passwordHash) return null;
         // if (user.role !== Role.GUEST && !user.emailVerified)  return null;
-        
 
         const valid = await bcrypt.compare(
           credentials.password as string,
@@ -122,6 +121,32 @@ export const authConfig = {
       };
 
       return session;
+    },
+  },
+  events: {
+    async signIn({ user, profile, isNewUser }) {
+      if (!isNewUser || !user.email) return;
+
+      const existingGuest = await db.guest.findUnique({
+        where: { userId: user.id },
+      });
+      if (existingGuest) return;
+
+      const googleProfile = profile as GoogleProfile | undefined;
+
+      await db.guest.create({
+        data: {
+          userId: user.id,
+          email: user.email,
+          firstName: googleProfile?.given_name ?? "Guest",
+          lastName: googleProfile?.family_name ?? "—",
+        },
+      });
+
+      await db.user.update({
+        where: { id: user.id },
+        data: { role: Role.GUEST },
+      });
     },
   },
   pages: { signIn: "/login" },

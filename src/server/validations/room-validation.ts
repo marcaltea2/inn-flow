@@ -60,7 +60,7 @@ export const getAllRoomsSchema = z
   .optional()
   .default({});
 
-
+export type GetAllRoomInput = z.infer<typeof getAllRoomsSchema>;
 export type CreateRoomInput = z.infer<typeof createRoomSchema>;
 export type UpdateRoomInput = z.infer<typeof updateRoomSchema>;
 export type SetRoomStatusInput = z.infer<typeof setRoomStatusSchema>;

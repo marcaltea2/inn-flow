@@ -22,6 +22,10 @@ export const permissions = {
     assignTask: ["ADMIN", "MANAGER"],
     completeTask: ["ADMIN", "MANAGER", "HOUSEKEEPING"],
   },
+  guest: {
+    manage: ["ADMIN", "MANAGER", "FRONT_DESK"],
+  },
+
   staff: {
     view: ["ADMIN", "MANAGER"],
     manage: ["ADMIN"],
