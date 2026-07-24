@@ -27,6 +27,7 @@ export default async function RegistrationCardPage({
         <Button
           variant="ghost"
           size="sm"
+          nativeButton={false}
           className="mb-4 -ml-2"
           render={
             <Link href="/guests">
